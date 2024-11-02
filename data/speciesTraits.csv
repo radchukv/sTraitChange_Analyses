@@ -1,0 +1,79 @@
+"","Species","Diet.5Cat_Elton","Diet.Certainty_Elton","Nest.type_Sibly","Foraging.habitat_Sibly","Migratory.mode_Sibly","GenLength_y_IUCN","concern_IUCN","NumberBroods","litter_or_clutch_size_n","litters_or_clutches_per_y","reprod_rate","adult_body_mass_g","maximum_longevity_y","fledging_age_d","female_maturity_d"
+"1","Aegolius funereus","VertFishScav","A","cavity","terrestrial","nonmigrant",4.116172628,"LC","single",5.145,1,5.145,131.5,15.9,31.7,364.234
+"2","Aethia pusilla","Invertebrate","A","open","","nonmigrant",6.690182652,"LC","single",1,1,1,85,8.1,32,1095
+"3","Alca torda","VertFishScav","A","open","pelagic","migrant",16.36956071,"NT","single",1,1,1,720,42,17.2,1456.936
+"4","Aptenodytes forsteri","VertFishScav","A","open","pelagic","migrant",16.40149027,"LC","single",1,1,1,29750,40,157.5,1825
+"5","Athene cunicularia","VertFishScav","A","burrowing","terrestrial","migrant",3.059077808,"LC","multi",8,1.25,10,150.6,11,NA,365
+"6","Athene noctua","Carnivore","","","","nonmigrant",3.424326543,"","",NA,NA,NA,NA,NA,NA,NA
+"7","Buteo buteo","VertFishScav","A","open","terrestrial","nonmigrant",9.449470051,"LC","single",3,1,3,878.25,28.8,36.75,910.202
+"8","Calonectris diomedea","VertFishScav","A","cavity","pelagic","migrant",13.74119658,"LC","single",1,0.95049505,0.95049505,775.225,24.83333333,91.5,3049.8375
+"9","Capreolus capreolus","Herbivore","","","","",4.5,"LC","",1.785,1.05,1.87425,21666.685,17.5,NA,413
+"10","Cervus elaphus","Herbivore","ABC","","terrestrial","elavational migrations",2.3,"LC","single",1.035,0.905,0.936675,160166.665,31.5,NA,852
+"11","Chelonia mydas","Omnivore","","hole","marine/pelagic","migrant",NA,"EN","",112.5,1.03,115.875,160000,75,NA,3650
+"12","Chen  rossii","PlantSeed","A","open","terrestial/freshwater","migrant",8.6,"LC","single",4,1,4,1597.5,22.5,41,739.335
+"13","Chen caerulescens caerulescens","PlantSeed","A","open","terrestrial","migrant",8.9,"LC","single",4.2,1,4.2,2630.75,27.5,43.5,730.5
+"14","Chrysemys picta","Omnivore","","","freshwater","nonmigrant",20,"LC","multi",6,2,12,371.8,61,NA,2556.68
+"15","Cinclus cinclus","Invertebrate","A","cave","freshwater","migrant",2.379229571,"LC","multi",4.52,2,9.04,61.7,10.6,22,364.234
+"16","Coracias garrulus","Invertebrate","A","cavity","terrestrial","migrant",3.792817625,"LC","single",4.25,1,4.25,146,9.2,26.5,363.468
+"17","Cyanistes caeruleus","Omnivore","A","cavity","terrestrial","nonmigrant",2.932679691,"LC","multi",8,1.5,12,11.2,14.6,NA,365
+"18","Daption capense","Invertebrate","A","open","pelagic","migrant",13.86925875,"LC","single",1,1,1,424.75,25,48.5,2191.5
+"19","Diomedea exulans","Invertebrate","A","open","pelagic","migrant",22.94958613,"VU","single",1,0.51,0.51,7990,60,277.7,3670.7625
+"20","Eudyptula minor","VertFishScav","A","cavity","pelagic","nonmigrant",7.87102974,"LC","multi",2,1.5,3,1157.295833,16.91666667,45.5,726.936
+"21","Falco naumanni","Invertebrate","A","cave","terrestrial","migrant",2.996853971,"LC","single",4.2,1,4.2,152.5,10.91666667,27,545.202
+"22","Ficedula hypoleuca","Invertebrate","A","cavity","terrestrial","migrant",4.116172628,"LC","single",5.85,1,5.85,12.775,15,15.5,365
+"23","Forpus passerinus","PlantSeed","A","cavity","terrestrial","nonmigrant",2.991287825,"LC","multi",6,2,12,24,11.6,35,363.468
+"24","Fratercula arctica","VertFishScav","A","cavity","pelagic","migrant",14.22956209,"VU","single",1,1,1,437.9166667,40.83333333,47.7,1460
+"25","Fulica atra","PlantSeed","A","open","freshwater","resident",4.19671358,"LC","multi",7.6,1.5,11.4,775,32.3,57.5,365
+"26","Fulmarus glacialis","VertFishScav","A","open","pelagic","migrant",25.34141952,"LC","single",1,1,1,785,51,52,2561
+"27","Hirundo rustica","Invertebrate","A","cave","terrestrial","migrant",3.132150175,"LC","multi",4.495,1.8,8.091,19,16,20.75,365
+"28","Hydrobates pelagicus","Carnivore","A","cavity","pelagic","migrant",13.77408344,"LC","single",1,1,1,25.45,33.8,62.8,1095
+"29","Ichthyaetus audouinii","VertFishScav","","open","marine","migrant",13,"LC","single",2.495,1,2.495,545.25,20.91666667,37.5,1095
+"30","Lanius collurio","Invertebrate","A","open","terrestrial","migrant",2.291235301,"LC","single",5.5,1,5.5,28.75,10.08333333,13.5,364.234
+"31","Larus novaehollandiae scopulinus","Omnivore","A","open","freshwater/marine","migrant",11.5,"LC","multi",2.525,1.5,3.7875,295.375,14.66666667,42,1811
+"32","Lemmus trimucronatus","Herbivore","","","","nonmigrant",0.5,"LC","multi",6.39,3.25,20.7675,60.8,1.666666667,NA,50.56048
+"33","Liasis fuscus","Carnivore","","","terrestrial/freshwater","nonmigrant???",NA,"LC","single",13.5,1,13.5,10592,26.8,NA,1460
+"34","Macronectes giganteus","VertFishScav","A","open","pelagic","migrant",20.61042962,"LC","single",1,0.865461848,0.865461848,4447.5,15.75,119,2444.502
+"35","Macronectes halli","VertFishScav","A","open","pelagic","migrant",17.08715576,"LC","single",1,1,1,4313,9.75,114,2922
+"36","Malurus cyaneus","Invertebrate","A","cavity","","nonmigrant",3.905581777,"LC","multi",3.3,3.3,10.89,10.5,9,NA,365
+"37","Malurus elegans","Invertebrate","A","cavity","forest","nonmigrant",6.303651918,"LC","multi  ",2.45,1.7,4.165,9.75,18,NA,3230.25
+"38","Marmota flaviventris","Omnivore","ABC","","","nonmigrant",5.5,"LC","single",4.44,0.97,4.3068,3709.73,21.2,NA,816.59788
+"39","Melospiza melodia","Omnivore","A","cavity","terrestrial","migrant",2.588141994,"LC","multi",3.95,2.5,9.875,23.35,12,10,365
+"40","Nerodia sipedon insularum","VertFish ","","","","",NA,"LC","single",30,1,30,1306,9.6,NA,730.5
+"41","Oenanthe oenanthe","Invertebrate","A","cave","terrestrial","migrant",2.246001873,"LC","multi",5.5,2,11,23.775,10.08333333,15,364.234
+"42","Oryctolagus cuniculus","Herbivore","ABC","cavity","","nonmigrant",0.7,"NT","multi",5.24,4.415,23.1346,1900,18,NA,185.61
+"43","Otus scops","Carnivore","","","","migrant",2.118684238,"","",NA,NA,NA,NA,NA,NA,NA
+"44","Ovis canadensis","Herbivore","ABC","","","migrant",3,"LC","single",1.03,1,1.03,69125,24,NA,707
+"45","Pagodroma nivea","Invertebrate","A","open","pelagic","nonmigrant",17.97738638,"LC","single",1,0.760416667,0.760416667,317,20,46,3944.7
+"46","Parus major","Omnivore","A","cavity","terrestrial","migrant",3.049707035,"LC","multi",8.6,1.5,12.9,18,15.417,16.5,365
+"47","Passer domesticus","PlantSeed","A","cavity","terrestrial","nonmigrant",3.726344591,"LC","multi",4.35,3.25,14.1375,27.7,23,15,182.625
+"48","Passerculus sandwichensis","Omnivore","D2","cavity","","migrant",2.242147407,"LC","multi",4.04,2,8.08,20.2,6.916666667,11.5,364.234
+"49","Phalacrocorax aristotelis","VertFishScav","A","open","marine","migrant",8.8,"LC","single",3.07,1,3.07,1786.75,30.6,53,912.75
+"50","Plectrophenax nivalis","PlantSeed","A","cave","terrestrial","migrant",2.640707546,"LC","single",5.23,1,5.23,40.33333333,9.6,13.5,364.234
+"51","Ptychoramphus aleuticus","Invertebrate","A","cavity","pelagic","migrant",6.853379493,"NT","multi",1,1.5,1.5,184,16.2,43.5,730
+"52","Pusa hispida","InvertFish","","","","nonmigrant",18.6,"LC","single",1,1,1,88070,46,NA,2191.5
+"53","Pygoscelis adeliae","Invertebrate","A","open","pelagic","migrant",12.83202211,"LC","single",2,1,2,4850,18,51,1366.569
+"54","Rangifer tarandus caribou","Herbivore","ABC","","","migrant",8.5,"VU","single",1.1,1,1.1,101250,21.7,NA,695.16674
+"55","Rangifer tarandus platyrhynchus","Herbivore","ABC","","","nonmigrant",8.5,"VU","single",1.1,1,1.1,101250,21.7,NA,695.16674
+"56","Rhabdomys pumilio","Omnivore","","","","nonmigrant",1,"LC","multi",6,4,24,45.865,4.5,NA,54.17608
+"57","Rissa tridactyla","Omnivore","A","open","marine","migrant",9.781390857,"","single",2,1,2,407.75,28.5,42.7,1643.125
+"58","Salmo salar","Carnivore","","","freshwater/marine","migrant",6,"LC","single",750,1,750,26000,13,NA,365
+"59","Salmo trutta","Carnivore","","","freshwater/marine","migrant",1,"LC","single",8000,1,8000,16000,20,NA,360
+"60","Salvelinus fontinalis","Carnivore","","","freshwater ","migrant",NA,"","single",500,1,500,5000,24,NA,730
+"61","Setophaga caerulescens","Invertebrate","A","open","terrestrial","migrant",2.256927131,"LC","",4,1.85,7.4,10.2,10,9.5,365
+"62","Stegonotus cucullatus","VertInvertEggs","","","","",NA,"LC","multi",11.85,2,23.7,848,9,NA,548
+"63","Stercorarius longicaudus","VertFishScav","A","open","terrestrial","migrant",7.780979306,"LC","single",2,1,2,298,22,25,1095
+"64","Stercorarius maccormicki","VertFishScav","A","open","marine","migrant",17.1,"LC","single",2,1,2,1382.5,34.5,49.5,1822.686
+"65","Sterna dougallii","VertFishScav","A","open","marine","migrant",8.35663561,"LC","single",1.66,1,1.66,112,25.7,28.5,910.968
+"66","Sterna hirundo","VertFishScav","A","open","freshwater","migrant",10.39724168,"LC","single",2.5,1,2.5,124,33,26.75,910.968
+"67","Sterna paradisaea","VertFishScav","A","open","freshwater","migrant",11.27037394,"LC","single",2,1,2,110,34,22.5,1095
+"68","Sula nebouxii","VertFishScav","A","open","pelagic","nonmigrant",9.578962811,"LC","multi",2,1.25,2.5,1542,18,102,1090.404
+"69","Tachycineta bicolor","Invertebrate","A","cavity","","migrant",2.574948263,"LC","single",5,1,5,20.8,12.1,20,365
+"70","Thalassarche chlororhynchos","Carnivore","A","open","pelagic","migrant",18.48422432,"EN","single",1,0.902439024,0.902439024,2115,37,100.5,3323.775
+"71","Thalassarche chrysostoma","Invertebrate","A","open","pelagic","migrant",22.69051854,"EN","single",1,0.579925651,0.579925651,3700,47.16666667,106,4383
+"72","Thalassarche melanophris","Carnivore","A","open","pelagic","migrant",23.61042962,"LC","single",1,0.84,0.84,3440,43.7,101.5,3871.65
+"73","Thalasseus sandvicensis","VertFishScav","A","open","pelagic","migrant",8.530597521,"LC","single",1.21,1,1.21,208,30.8,32,910.968
+"74","Uria aalge","VertFishScav","A","open","pelagic","migrant",14.77223838,"LC","single",1,1,1,991.5,42.83333333,60,1825
+"75","Uria lomvia","VertFishScav","A","open","pelagic","migrant",12.9330039,"LC","single",1,1,1,964,29,NA,1862
+"76","Urocitellus columbianus ","Omnivore","ABC","","","nonmigrant",2.5,"LC","single",3.54,1,3.54,468.635,4.241666667,NA,581.24834
+"77","Vipera berus","Carnivore","","","terrestrial","nonmigrant",3.5,"","single",10.5,1,10.5,279,19,NA,1277
+"78","Zootoca vivipara","Insectivore","","","terrestrial","nonmigrant",2,"LC","single",6,1,6,4.335,4.991666667,NA,1034.62
