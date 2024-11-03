@@ -1,4 +1,4 @@
-## MS figures
+## The script to produce the figures included in the MS
 
 library(ggplot2)
 library(patchwork)

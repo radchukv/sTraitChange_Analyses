@@ -1,4 +1,4 @@
-# Relations between PDeltaAIC, study duration and the CZ coefficients
+# The script to assess relations between PDeltaAIC, study duration and the CZ coefficients
 
 # I. Number of years and PDeltaAIC -------------------------------------------
 

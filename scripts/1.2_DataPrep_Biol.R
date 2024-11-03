@@ -1,6 +1,6 @@
-#### Script preparing biological data for climwin analyses - sTraitChange project
+#### This script prepares biological data for sliding windown analyses using climwin
 
-#devtools::install_github('radchukv/sTraitChange', auth_token = '4a4aba816767714248758ae04b068ff7d2d92097')
+#devtools::install_github('radchukv/sTraitChange')
 library(sTraitChange)
 library(dplyr)
 library(ggplot2)
@@ -69,8 +69,8 @@ levels(biol_us$Unit_trait)  ## so convertion of dates to Julian not needed
 
 # 1. EUrope no sea birds
 eu_noSea <- prep_subset(data = biol_eu_stand, Seabird = FALSE)
-nrow(eu_noSea$Sel[[1]])   ## 121  # 87
-length(unique(eu_noSea$subdata[[1]]$ID))   ## 140  #87
+nrow(eu_noSea$Sel[[1]])    # 87
+length(unique(eu_noSea$subdata[[1]]$ID))   #87
 
 max(eu_noSea$subdata[[1]]$Trait_mean[eu_noSea$subdata[[1]]$Trait_Categ == 'Phenological'], na.rm = T)
 hist(eu_noSea$subdata[[1]]$Trait_mean[eu_noSea$subdata[[1]]$Trait_Categ == 'Phenological'])
@@ -79,8 +79,8 @@ hist(eu_noSea$subdata[[1]]$Trait_mean[eu_noSea$subdata[[1]]$Trait_Categ == 'Phen
 # 2. US no sea birds
 ## exclude sea birds
 us_noSea <- prep_subset(data = biol_us, Seabird = FALSE)
-nrow(us_noSea$Sel[[1]])  ## 47  ## 44
-length(unique(us_noSea$subdata[[1]]$ID))   ## 50  ## 44
+nrow(us_noSea$Sel[[1]])    ## 44
+length(unique(us_noSea$subdata[[1]]$ID))   ## 44
 
 max(us_noSea$subdata[[1]]$Trait_mean[us_noSea$subdata[[1]]$Trait_Categ == 'Phenological'], na.rm = T)
 hist(us_noSea$subdata[[1]]$Trait_mean[us_noSea$subdata[[1]]$Trait_Categ == 'Phenological'])
@@ -89,8 +89,8 @@ hist(us_noSea$subdata[[1]]$Trait_mean[us_noSea$subdata[[1]]$Trait_Categ == 'Phen
 ## 3. Sea birds
 ## keep only sea birds
 all_Sea <- prep_subset(data = biol_dat, Seabird = TRUE)
-nrow(all_Sea$Sel[[1]])  ## 54  # 46
-length(unique(all_Sea$subdata[[1]]$ID))    ## 68  # 46
+nrow(all_Sea$Sel[[1]])  # 46
+length(unique(all_Sea$subdata[[1]]$ID))      # 46
 
 max(all_Sea$subdata[[1]]$Trait_mean[all_Sea$subdata[[1]]$Trait_Categ == 'Phenological'], na.rm = T)
 hist(all_Sea$subdata[[1]]$Trait_mean[all_Sea$subdata[[1]]$Trait_Categ == 'Phenological'])
@@ -105,7 +105,7 @@ biol_w <- droplevels(subset(biol_dat, ID %in%
                                 unique(biol_dat$ID[biol_dat$Study_Authors == 'Jenouvrier_et_al']),
                                 unique(biol_dat$ID[biol_dat$Study_Authors == 'Tarwater&Beissinger']),
                                 unique(biol_dat$ID[biol_dat$Study_Authors == 'Veran&Beissinger']))))
-length(unique(biol_w$ID))        ## 46  # 35
+length(unique(biol_w$ID))        ## 35
 length(levels(biol_w$Species))   ## 22
 length(levels(biol_w$Location))  ## 15
 levels(biol_w$Taxon)             ## 3
@@ -114,8 +114,8 @@ levels(biol_w$Taxon)             ## 3
 levels(biol_w$Unit_trait)
 
 rest_w <- prep_subset(data = biol_w, Seabird = FALSE)
-nrow(rest_w$Sel[[1]])                     ## 33  # 27
-length(unique(rest_w$subdata[[1]]$ID))    ## 38  # 27
+nrow(rest_w$Sel[[1]])                     ## 27
+length(unique(rest_w$subdata[[1]]$ID))    ## 27
 
 max(rest_w$subdata[[1]]$Trait_mean[rest_w$subdata[[1]]$Trait_Categ == 'Phenological'], na.rm = T)
 hist(rest_w$subdata[[1]]$Trait_mean[rest_w$subdata[[1]]$Trait_Categ == 'Phenological'])
@@ -124,8 +124,8 @@ hist(rest_w$subdata[[1]]$Trait_mean[rest_w$subdata[[1]]$Trait_Categ == 'Phenolog
 ## 5. Australia
 biol_au <- droplevels(subset(biol_dat, Country %in% c('Australia')))
 biol_au_noSea <- prep_subset(biol_au, Seabird = FALSE)
-nrow(biol_au_noSea$Sel[[1]])                      ## 11  # 9
-length(unique(biol_au_noSea$subdata[[1]]$ID))     ## 13  # 9
+nrow(biol_au_noSea$Sel[[1]])                      ## 9
+length(unique(biol_au_noSea$subdata[[1]]$ID))     ## 9
 
 max(biol_au_noSea$subdata[[1]]$Trait_mean[biol_au_noSea$subdata[[1]]$Trait_Categ == 'Phenological'], na.rm = T)
 hist(biol_au_noSea$subdata[[1]]$Trait_mean[biol_au_noSea$subdata[[1]]$Trait_Categ == 'Phenological'])

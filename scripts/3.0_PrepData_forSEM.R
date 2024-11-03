@@ -14,8 +14,8 @@ files <- list.files('./output_climwin_temp/', pattern = 'Rand.RDS', full.names =
 testIDs <- unlist(lapply(files, FUN = function(x){
   as.numeric(strsplit(strsplit(x, 'temp//')[[1]][2], split = '_')[[1]][1])
 }))
-length(testIDs)    ## 308
-length(unique(eu_noSea$Sel[[1]]$ID))   ## 121  ##87
+length(testIDs)    ## 213
+length(unique(eu_noSea$Sel[[1]]$ID))    ##87
 
 
 ## prepare the data (merging unique climwin studies with the respective
@@ -28,8 +28,8 @@ temp_eu_SEM <- prep_SEM_input(prep_subset_climwin = eu_noSea,
                               RefMon = NA,
                               selIDs = unique(eu_noSea$Sel[[1]]$ID)[which (unique(eu_noSea$Sel[[1]]$ID) %in%
                                                                              testIDs)])
-length(unique(temp_eu_SEM$ID))  ## 140  # 87
-length(unique(eu_noSea$subdata[[1]]$ID))  ## 140  #87
+length(unique(temp_eu_SEM$ID))  # 87
+length(unique(eu_noSea$subdata[[1]]$ID))  #87
 ## check which ones are not there
 # unique(eu_noSea$subdata[[1]]$ID)[which (! unique(eu_noSea$subdata[[1]]$ID) %in% unique(temp_eu_SEM$ID))]
 
@@ -47,8 +47,8 @@ temp_us_SEM <- prep_SEM_input(prep_subset_climwin = us_noSea,
                               selIDs = unique(us_noSea$Sel[[1]]$ID)[which (unique(us_noSea$Sel[[1]]$ID) %in%
                                                                              testIDs)])
 
-length(unique(temp_us_SEM$ID))   ## 50  # 44
-length(unique(us_noSea$subdata[[1]]$ID))   ## 50 # 44
+length(unique(temp_us_SEM$ID))   # 44
+length(unique(us_noSea$subdata[[1]]$ID))    # 44
 
 temp_us_SEM$Continent <- 'North America'
 
@@ -62,8 +62,8 @@ temp_seaB_SEM <- prep_SEM_input(prep_subset_climwin = all_Sea,
                                 RefMon = NA,
                                 selIDs = unique(all_Sea$Sel[[1]]$ID)[which (unique(all_Sea$Sel[[1]]$ID) %in%
                                                                               testIDs)])
-length(unique(temp_seaB_SEM$ID))   ## 68  # 46
-length(unique(all_Sea$subdata[[1]]$ID))   ## 68  # 46
+length(unique(temp_seaB_SEM$ID))    # 46
+length(unique(all_Sea$subdata[[1]]$ID))   # 46
 # check if all are there
 # unique(all_Sea$subdata[[1]]$ID)[which (! unique(all_Sea$subdata[[1]]$ID) %in% unique(temp_seaB_SEM$ID))]
 
@@ -93,8 +93,8 @@ temp_restW_SEM <- prep_SEM_input(prep_subset_climwin = rest_w,
                                  RefMon = NA,
                                  selIDs = unique(rest_w$Sel[[1]]$ID)[which (unique(rest_w$Sel[[1]]$ID) %in%
                                                                               testIDs)])
-length(unique(temp_restW_SEM$ID))  ## 38  # 27
-length(unique(rest_w$subdata[[1]]$ID))    ## 38  # 27
+length(unique(temp_restW_SEM$ID))  # 27
+length(unique(rest_w$subdata[[1]]$ID))      # 27
 ## unique(rest_w$subdata[[1]]$ID)[! unique(rest_w$subdata[[1]]$ID) %in%  unique(temp_restW_SEM$ID)]
 
 
@@ -117,8 +117,8 @@ temp_au_SEM <- prep_SEM_input(prep_subset_climwin = biol_au_noSea,
                               selIDs = unique(biol_au_noSea$Sel[[1]]$ID)[which (unique(biol_au_noSea$Sel[[1]]$ID) %in%
                                                                                   testIDs)])
 
-length(unique(temp_au_SEM$ID))  ## 13  #9
-length(unique(biol_au_noSea$subdata[[1]]$ID))  ## 13  # 9
+length(unique(temp_au_SEM$ID))  #9
+length(unique(biol_au_noSea$subdata[[1]]$ID))  # 9
 
 temp_au_SEM$Continent <- 'Australia'
 
@@ -126,12 +126,12 @@ temp_au_SEM$Continent <- 'Australia'
 ## bind all the SEM input datasets
 temp_SEM <- rbind(temp_eu_SEM, temp_us_SEM, temp_seaB_SEM,
                   temp_restW_SEM, temp_au_SEM)
-length(unique(temp_SEM$ID))   ##309  # 213
+length(unique(temp_SEM$ID))    # 213
 temp_SEM$Demog_rate <- trimws(temp_SEM$Demog_rate, 'both')
 
 
 ## check for the diff
-length(unique(biol_dat$ID)[which(! unique(biol_dat$ID) %in% unique(temp_SEM$ID))])  ## 0
+length(unique(biol_dat$ID)[which(! unique(biol_dat$ID) %in% unique(temp_SEM$ID))])
 unique(biol_dat$ID)[which(! unique(biol_dat$ID) %in% unique(temp_SEM$ID))]
 
 ## for now also fixing the Demog_rateCateg here (later will be fixed directly in the
@@ -167,7 +167,7 @@ testIDs_precip <- unlist(lapply(files_precip, FUN = function(x){
   as.numeric(strsplit(strsplit(x, 'precip//')[[1]][2], split = '_')[[1]][1])
 }))
 length(testIDs_precip)     ## 307
-length(unique(eu_noSea$Sel[[1]]$ID))     ##121  87
+length(unique(eu_noSea$Sel[[1]]$ID))     ##  87
 
 
 ## prepare the data (merging unique climwin studies with the respective
@@ -181,8 +181,8 @@ precip_eu_SEM <- prep_SEM_input(prep_subset_climwin = eu_noSea,
                                 selIDs = unique(eu_noSea$Sel[[1]]$ID)[which (unique(eu_noSea$Sel[[1]]$ID) %in%
                                                                                testIDs_precip)])
 
-length(unique(precip_eu_SEM$ID))   ## 140  #87
-length(unique(eu_noSea$subdata[[1]]$ID))  ## 140  #87
+length(unique(precip_eu_SEM$ID))   ## 87
+length(unique(eu_noSea$subdata[[1]]$ID))  ## 87
 
 # unique(eu_noSea$subdata[[1]]$ID)[which (! unique(eu_noSea$subdata[[1]]$ID) %in% unique(precip_eu_SEM$ID))]
 
@@ -199,8 +199,8 @@ precip_us_SEM <- prep_SEM_input(prep_subset_climwin = us_noSea,
                                 selIDs = unique(us_noSea$Sel[[1]]$ID)[which (unique(us_noSea$Sel[[1]]$ID) %in%
                                                                                testIDs_precip)])
 
-length(unique(precip_us_SEM$ID))  ## 50   #44
-length(unique(us_noSea$subdata[[1]]$ID))    ## 50   #44
+length(unique(precip_us_SEM$ID))  ##44
+length(unique(us_noSea$subdata[[1]]$ID))    ##44
 
 precip_us_SEM$Continent <- 'North America'
 ## check what is missing
@@ -216,8 +216,8 @@ precip_seaB_SEM <- prep_SEM_input(prep_subset_climwin = all_Sea,
                                   RefMon = NA,
                                   selIDs = unique(all_Sea$Sel[[1]]$ID)[which (unique(all_Sea$Sel[[1]]$ID) %in%
                                                                                 testIDs_precip)])
-length(unique(precip_seaB_SEM$ID))   ##  65  #45
-length(unique(all_Sea$subdata[[1]]$ID))    ##  68   #46
+length(unique(precip_seaB_SEM$ID))   ##45
+length(unique(all_Sea$subdata[[1]]$ID))    ##46
 ## difference of 3 studies - figure out why
 unique(all_Sea$subdata[[1]]$ID)[which (! unique(all_Sea$subdata[[1]]$ID) %in%
                                          unique(precip_seaB_SEM$ID))]
@@ -252,8 +252,8 @@ precip_restW_SEM <- prep_SEM_input(prep_subset_climwin = rest_w,
                                    RefMon = NA,
                                    selIDs = unique(rest_w$Sel[[1]]$ID)[which (unique(rest_w$Sel[[1]]$ID) %in%
                                                                                 testIDs_precip)])
-length(unique(precip_restW_SEM$ID))  ## 38   #27
-length(unique(rest_w$subdata[[1]]$ID))    ## 38   #27
+length(unique(precip_restW_SEM$ID))  ##27
+length(unique(rest_w$subdata[[1]]$ID))    ##27
 # check the difference
 unique(rest_w$subdata[[1]]$ID)[which (! unique(rest_w$subdata[[1]]$ID) %in%
                                          unique(precip_restW_SEM$ID))]
@@ -280,8 +280,8 @@ precip_au_SEM <- prep_SEM_input(prep_subset_climwin = biol_au_noSea,
                                 selIDs = unique(biol_au_noSea$Sel[[1]]$ID)[which (unique(biol_au_noSea$Sel[[1]]$ID) %in%
                                                                                     testIDs_precip)])
 
-length(unique(precip_au_SEM$ID))      ## 13  #9
-length(unique(biol_au_noSea$subdata[[1]]$ID))  ## 13   #9
+length(unique(precip_au_SEM$ID))      ##9
+length(unique(biol_au_noSea$subdata[[1]]$ID))  ##9
 
 precip_au_SEM$Continent <- 'Australia'
 
@@ -289,7 +289,7 @@ precip_au_SEM$Continent <- 'Australia'
 ## bind all the SEM input datasets
 precip_SEM <- rbind(precip_eu_SEM, precip_us_SEM, precip_seaB_SEM,
                     precip_restW_SEM, precip_au_SEM)
-length(unique(precip_SEM$ID))   ##306   #212
+length(unique(precip_SEM$ID))   ##212
 length(unique(biol_dat$ID))  # 213 - okay, since Oppel study had to be ommited
 
 

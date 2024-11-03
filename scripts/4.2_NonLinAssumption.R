@@ -1,4 +1,4 @@
-## checking nonlinearity assumption underlying different relations
+## This scripts checks the nonlinearity assumption underlying different relations
 
 library(spaMM)
 library(tidyverse)

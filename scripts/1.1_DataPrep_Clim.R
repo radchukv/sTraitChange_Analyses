@@ -2,10 +2,10 @@
 # ATTENTION: it will not run out of the box as no climate
 # data are shared in the repo. In order to run this script
 # the user has to download the climate data from the respective
-# sources mentioned in Supplementary materials (Table S7) and
+# sources mentioned in Supplementary materials (Table S6) and
 # place them in the respective directory on the path (./data)
 
-#devtools::install_github('radchukv/sTraitChange', auth_token = '4a4aba816767714248758ae04b068ff7d2d92097')
+#devtools::install_github('radchukv/sTraitChange')
 #devtools::install_github("LiamDBailey/climwin", ref = "devel")
 library(climwin)
 library(sTraitChange)

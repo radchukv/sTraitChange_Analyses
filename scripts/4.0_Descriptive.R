@@ -1,5 +1,6 @@
-## Descriptive stats of the whole dataset
-## some of these plots were produced for a ppt
+## This script provides some descriptive stats of the whole dataset
+## some of these plots were produced for a ppt and are not relevant for the MS (
+## stylized / colourful versions)
 
 library(metafor)
 library(ggplot2)
