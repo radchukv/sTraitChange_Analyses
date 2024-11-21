@@ -35,7 +35,7 @@ This project contains the following folders:
 - output_all: general output obtained from the complete workflow;    
 - plots_ms: plots used in the manuscript;   
 - tables: tables produced during the analyses;   
-- scripts: all scripts used in the workflow (more details below).    
+- scripts: all R scripts used in the workflow (more details below).    
 
 ## Scripts
 
