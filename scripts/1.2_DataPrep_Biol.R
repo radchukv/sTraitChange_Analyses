@@ -1,4 +1,4 @@
-#### This script prepares biological data for sliding windown analyses using climwin
+#### This script prepares biological data for sliding window analyses using climwin
 
 #devtools::install_github('radchukv/sTraitChange')
 library(sTraitChange)
