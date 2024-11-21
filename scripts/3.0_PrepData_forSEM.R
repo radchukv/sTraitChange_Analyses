@@ -1,7 +1,12 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## this script merges climwin results with demographic data,
 ## to have full dataset for SEM analyses
-
+## ATTENTION: this script will not run out of the box, because it requires the
+## folder with the output from climwin analyses: output_climwin_temp and output_climwin_precip
+## (which are large in size and could not be shared on GitHub).
+## But it will work fine for the users that downloaded climate data specified in the
+# Supplementary materials and used the same directories as specified in climwin analyses (
+# script 2_climwin.R)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 ####                 1. For temperature data                      ####
@@ -134,18 +139,12 @@ temp_SEM$Demog_rate <- trimws(temp_SEM$Demog_rate, 'both')
 length(unique(biol_dat$ID)[which(! unique(biol_dat$ID) %in% unique(temp_SEM$ID))])
 unique(biol_dat$ID)[which(! unique(biol_dat$ID) %in% unique(temp_SEM$ID))]
 
-## for now also fixing the Demog_rateCateg here (later will be fixed directly in the
-## biol_dat) so that there are no white spaces
+## for now also fixing the Demog_rateCateg here so that there are no white spaces
 temp_SEM$Demog_rate_Categ <- trimws(temp_SEM$Demog_rate_Categ)
 temp_SEM$Demog_rate <- trimws(temp_SEM$Demog_rate)
 temp_SEM$Trait <- trimws(temp_SEM$Trait)
 
 ## add the variable differentiating the age class for the morphological trait (diff. effects for morphology)
-# test_grepl <- grepl(pattern = 'Fledging|Subadult|Juv|Young', x= temp_SEM$Trait)
-# sum(test_grepl)
-# test_grep <- grep(pattern = 'Fledging|Subadult|Juv|Young', x= temp_SEM$Trait)
-# length(test_grep)
-
 temp_SEM$Trait_ageClass[temp_SEM$Trait_Categ == 'Morphological'] <- 'Adult'
 temp_SEM$Trait_ageClass[temp_SEM$Trait_Categ == 'Morphological' &
                           grepl(pattern = 'Birth|Chick|Neonatal', temp_SEM$Trait)] <- 'Neonatal'
@@ -166,7 +165,7 @@ files_precip <- list.files('./output_climwin_precip/', pattern = 'Rand.RDS', ful
 testIDs_precip <- unlist(lapply(files_precip, FUN = function(x){
   as.numeric(strsplit(strsplit(x, 'precip//')[[1]][2], split = '_')[[1]][1])
 }))
-length(testIDs_precip)     ## 307
+length(testIDs_precip)     ## 213
 length(unique(eu_noSea$Sel[[1]]$ID))     ##  87
 
 
@@ -218,7 +217,7 @@ precip_seaB_SEM <- prep_SEM_input(prep_subset_climwin = all_Sea,
                                                                                 testIDs_precip)])
 length(unique(precip_seaB_SEM$ID))   ##45
 length(unique(all_Sea$subdata[[1]]$ID))    ##46
-## difference of 3 studies - figure out why
+## difference ois the study ID 430, for which no precip data were available
 unique(all_Sea$subdata[[1]]$ID)[which (! unique(all_Sea$subdata[[1]]$ID) %in%
                                          unique(precip_seaB_SEM$ID))]
 ## 430
@@ -254,11 +253,9 @@ precip_restW_SEM <- prep_SEM_input(prep_subset_climwin = rest_w,
                                                                                 testIDs_precip)])
 length(unique(precip_restW_SEM$ID))  ##27
 length(unique(rest_w$subdata[[1]]$ID))    ##27
-# check the difference
+# check
 unique(rest_w$subdata[[1]]$ID)[which (! unique(rest_w$subdata[[1]]$ID) %in%
                                          unique(precip_restW_SEM$ID))]
-## in fact 300 is former 321 (just overwrite here)
-precip_restW_SEM$ID[precip_restW_SEM$ID == 321] <- 300
 
 
 ## add continents, depending on the countries
