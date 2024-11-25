@@ -27,7 +27,22 @@ length(unique(biol_dat$ID))     ## 213
 ## some Demog_rate_Categ have white spaces... Correcting
 biol_dat$Demog_rate_Categ <- trimws(biol_dat$Demog_rate_Categ)
 
+# some exploration for stats
+biol_start <- biol_dat %>%
+  group_by(ID) %>%
+  slice_head()
+min(biol_start$Year)
+max(biol_start$Year)
+hist(biol_start$Year)
+median(biol_start$Year)  ## 1994
 
+biol_end <- biol_dat %>%
+  group_by(ID) %>%
+  slice_tail()
+min(biol_end$Year)
+max(biol_end$Year)
+hist(biol_end$Year)
+median(biol_end$Year)  #2014
 
 ## keep only European studies and US - for now (two separate datasets, because climwin are diff.)
 biol_eu <- droplevels(subset(biol_dat, ! Country %in% c('Antarctica', 'Australia',
