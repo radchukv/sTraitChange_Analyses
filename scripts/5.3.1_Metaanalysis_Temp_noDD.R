@@ -7,7 +7,6 @@
 ## where response is related to climate, and hence to the climatic window)
 
 library(metafor)
-library(vegan)
 library(ggplot2)
 library(magrittr)
 library(ape)

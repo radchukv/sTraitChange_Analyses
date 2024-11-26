@@ -6,7 +6,7 @@
 library(ggpubr)
 library(metafor)
 library(patchwork)
-library(multcomp)
+library(multcomp)  ## not needed? check!
 library(tidyverse)
 library(magrittr)
 

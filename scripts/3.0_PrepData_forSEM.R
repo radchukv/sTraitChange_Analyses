@@ -7,7 +7,7 @@
 ## But it will work fine for the users that downloaded climate data specified in the
 # Supplementary materials and used the same directories as specified in climwin analyses (
 # script 2_climwin.R)
-
+library(sTraitChange)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 ####                 1. For temperature data                      ####
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

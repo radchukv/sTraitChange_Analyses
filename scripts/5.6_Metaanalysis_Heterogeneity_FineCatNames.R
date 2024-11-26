@@ -3,11 +3,9 @@
 # by specific trait types
 
 library(ggpubr)
-library(metafor)
-library(patchwork)
-library(multcomp)
+library(sTraitChange)
 library(tidyverse)
-library(magrittr)
+
 
 # 1. data read-in  and prepare --------------------------------------------
 Coefs_Aut <- readRDS(file = './output_fSEM_temp/PathCoefs_allMods_Temp_Weights_DD_Autocor.RDS')

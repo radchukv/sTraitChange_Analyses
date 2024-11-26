@@ -3,7 +3,7 @@
 # !!!!!!! Attention: it will not run out of the box
 # as climate data are not shared in the repo (becasue it is too heavy
 # for GitHub)  and this script depends on that data
-
+library(sTraitChange)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 ####                                            I. T analyses                                       ####
