@@ -21,7 +21,44 @@ library(sTraitChange)
 
 The goal of sTraitChange_Analyses project is to provide the full workflow as well as the data needed to reproduce the analyses for the manuscript 'Changes in phenology mediate vertebrate population responses to climate globally' by Radchuk et al. (submitted). The analyses in this repository rely heavily on the functions available from [sTraitChange](https://github.com/radchukv/sTraitChange) package. 
 
-To be able to run these analyses you will have to install [sTraitChange](https://github.com/radchukv/sTraitChange) package. 
+## System requirements
+
+### Hardware requirements
+
+We recommend a computer with following specs to run the analyses in this R project:     
+- RAM: 16+ GB     
+- CPU: 4+ cores.   
+
+### Software requirements
+
+This R project was tested on:       
+- macOS: Sequioa 15.0.1   
+- Windows:      
+
+In order to run the analyses, the following R packages must be installed: 
+``` r
+install.packages(c('climwin', 'sTraitChange', 'metafor', 'patchwork', 'spaMM', 'ape', 'RRphylo', 
+'rtrees', 'geiger', 'corrplot', 'ggpubr', 'multcomp', 'ggnewscale', 'ggExtra', 'ggtext'))
+```
+
+The following versions of these packages were used when the R project `sTraitChange_Analyses` was tested:
+``` r
+"ape 5.8"
+"climwin 1.2.3"
+"corrplot 0.94"
+"geiger 2.0.11"
+"ggExtra 0.10.1"
+"ggnewscale 0.5.0"
+"ggpubr 0.6.0"
+"ggtext 0.1.2"
+"metafor 4.6.0"
+"multcomp 1.4.26"
+"patchwork 1.2.0"
+"rtrees 1.0.3"
+"spaMM 4.5.0"
+"sTraitChange 0.0.0.900"
+"tidyverse 2.0.0"
+```
 
 ## Structure
 
@@ -37,7 +74,7 @@ This project contains the following folders:
 - tables: tables produced during the analyses;   
 - scripts: all R scripts used in the workflow (more details below).    
 
-## Scripts
+## Instructions for use
 
 The scripts are numbered in the logical order in which they are used in the analyses. The scripts  pertaining to sliding window analyses will not run out of the box because relevant climate datasets could not be shared in the repo (due to its prohibitively big size). In order to run those scripts
 the user will have to download the climate data from the respective sources mentioned in Supplementary materials (Table S6) and place them in the respective directory on the path (./data).  
