@@ -2,8 +2,8 @@
 ## this script fits SEMs to the data
 library(sTraitChange)
 library(ggplot2)
-library(magrittr)
 library(tidyverse)
+library(magrittr)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -18,15 +18,8 @@ temp_SEM <- readRDS(file = './output_forSEM_temp/all_SEM.RDS')
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 ## test the function ID = 1
-# undebugSEM_ID1_st_Aut <- fit_SEM(biol_data = temp_SEM, ID = 1,
-#                                  out_SEM = 'output_fSEM_temp_simpleSEM', DD = 'n_effectDGR',
-#                                  weight = TRUE, correlation = FALSE,
-#                                  standardize = TRUE, Trait = FALSE,
-#                                  simpleSEM = FALSE)
-
-
-undebugSEM_ID1_st_Aut <- fit_SEM(biol_data = temp_SEM, ID = 7,
-                                 out_SEM = 'output_fSEM_temp',
+ID1_st_Aut <- fit_SEM(biol_data = temp_SEM, ID = 7,
+                                 out_SEM = NULL,
                                  DD = 'n_effectGR',
                                  weight = TRUE, correlation = TRUE,
                                  standardize = TRUE, Trait = FALSE,
@@ -52,7 +45,7 @@ fitted_SEM_Autoc <- lapply(unique(temp_SEM$ID)[- which(unique(temp_SEM$ID) %in%
                                                          c(3, 221, 550))],
                              FUN = function(x){
                                fit_SEM(biol_data = temp_SEM, ID = x,
-                                       out_SEM = 'output_fSEM_temp', DD = 'n_effectGR',
+                                       out_SEM = NULL, DD = 'n_effectGR', # out_SEM  = 'output_fSEM_temp'
                                        weight = TRUE, correlation = TRUE,
                                        standardize = TRUE, Trait = FALSE,
                                        simpleSEM = TRUE)
@@ -166,7 +159,7 @@ plot_R2_Tr <- ggplot(R2_Aut_proc, aes(x = R.squared)) +
             fontface = 'bold', size = 5) + xlab(expression('R'^2)) +
   ylab('Frequency')
 
-pdf('./plots_ms/FigS9_R2_allMods_Temp_Weights_DD_Autocor_DiffTraitCateg.pdf',
+pdf('./plots_ms/FigS7_R2_allMods_Temp_Weights_DD_Autocor_DiffTraitCateg.pdf',
     width = 10, height = 10)
 print(plot_R2_Tr)
 dev.off()
@@ -218,7 +211,7 @@ saveRDS(object = Coefs_Aut, file = './output_fSEM_temp/PathCoefs_allMods_Temp_We
 
 ## test the function ID = 418
 SEM_ID1_st_Aut_noDD <- fit_SEM(biol_data = temp_SEM, ID = 7,
-                               out_SEM = 'output_fSEM_noDD_temp',
+                               out_SEM = NULL,  # output_fSEM_noDD_temp
                                DD = 'none', weight = TRUE,
                                correlation = TRUE,
                                standardize = TRUE, Trait = FALSE,
@@ -231,7 +224,7 @@ SEM_ID1_st_Aut_noDD <- fit_SEM(biol_data = temp_SEM, ID = 7,
 fitted_SEM_noDD <- lapply(unique(temp_SEM$ID),
                            FUN = function(x){
                              fit_SEM(biol_data = temp_SEM, ID = x,
-                                     out_SEM = 'output_fSEM_noDD_temp',
+                                     out_SEM = NULL, # 'output_fSEM_noDD_temp'
                                      DD = 'none',
                                      weight = TRUE, correlation = TRUE,
                                      standardize = TRUE, Trait = FALSE,
@@ -345,7 +338,7 @@ precip_SEM <- readRDS(file = './output_forSEM_precip/all_SEM.RDS')
 fitted_SEM_Autoc_precip <- lapply(unique(precip_SEM$ID)[- which(unique(precip_SEM$ID) %in%  c(221))],
                            FUN = function(x){
                              fit_SEM(biol_data = precip_SEM, ID = x,
-                                     out_SEM = 'output_fSEM_precip', DD = 'n_effectGR',
+                                     out_SEM = NULL, DD = 'n_effectGR',  # 'output_fSEM_precip'
                                      weight = TRUE, correlation = TRUE,
                                      standardize = TRUE, Trait = FALSE,
                                      simpleSEM = TRUE)
@@ -481,7 +474,7 @@ saveRDS(object = Coefs_Aut_precip, file = './output_fSEM_precip/PathCoefs_allMod
 fitted_SEM_Autoc_precip_noDD <- lapply(unique(precip_SEM$ID)[- which(unique(precip_SEM$ID) %in%  c(581, 582))],
                                   FUN = function(x){
                                     fit_SEM(biol_data = precip_SEM, ID = x,
-                                            out_SEM = 'output_fSEM_noDD_precip',
+                                            out_SEM = NULL,  #'output_fSEM_noDD_precip'
                                             DD = 'none',
                                             weight = TRUE, correlation = TRUE,
                                             standardize = TRUE, Trait = FALSE,

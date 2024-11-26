@@ -4,9 +4,10 @@
 ## ATTENTION: this script will not run out of the box, because it requires the
 ## folder with the output from climwin analyses: output_climwin_temp and output_climwin_precip
 ## (which are large in size and could not be shared on GitHub).
-## But it will work fine for the users that downloaded climate data specified in the
+## But it will work fine for the users who downloaded climate data specified in the
 # Supplementary materials and used the same directories as specified in climwin analyses (
 # script 2_climwin.R)
+
 library(sTraitChange)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 ####                 1. For temperature data                      ####
