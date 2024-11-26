@@ -350,7 +350,7 @@ dev.off()
 # adding the traits also
 
 ## data on traits
-traits <- read.csv('./data-raw/speciesTraits.csv')
+traits <- read.csv('./data/speciesTraits.csv')
 
 ## some preparation of the trait data prior to use
 ## adding two alternative diet classif + fixing the migratory mode
