@@ -1,7 +1,6 @@
 ## A script to prepare vertebrate mega-tree
 ## preparing 100 vertebrate phylogenies
 
-
 library(ape)
 library(tidyverse)
 library(magrittr)

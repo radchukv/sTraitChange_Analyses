@@ -2,6 +2,7 @@
 
 library(spaMM)
 library(tidyverse)
+library(sTraitChange)
 
 # I. Nonlinearity in Temp-trait relation -------------------------------
 ## read in the raw data for temperature (for each year climate values, traits, dem. rates etc.)
