@@ -10,7 +10,8 @@ library(ggplot2)
 library(tidyverse)
 library(ape)
 library(corrplot)
-
+library(sTraitChange)
+library(magrittr)
 
 # 0. Data read and prep ---------------------------------------------------
 

@@ -11,6 +11,7 @@ library(ggplot2)
 library(magrittr)
 library(ape)
 library(corrplot)  # only to check the var-covar matrices
+library(sTraitChange)
 
 
 # 0. Data read and prep ---------------------------------------------------
