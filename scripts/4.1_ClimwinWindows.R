@@ -85,11 +85,13 @@ dev.off()
 
 Clim_summ_NumSt <- bothClim %>%
   dplyr::group_by(Climate, Trait_Categ) %>%
-  dplyr::mutate(Num_stud = n(), PvLess =
+  dplyr::mutate(PvLess =
                   dplyr::case_when(Pvalue < 0.05 ~ 1,
                                    TRUE ~ 0)) %>%
-  dplyr::mutate(AllSt = sum(PvLess), Prop = AllSt / Num_stud) %>%
-  dplyr::distinct(., Climate, Trait_Categ, .keep_all = TRUE)  ## these are desperately low props... I rather not report these
+  dplyr::mutate(AllSt = sum(PvLess))  %>%
+  dplyr::add_count() %>%
+  dplyr::mutate(Prop = AllSt / n) %>%
+  dplyr::distinct(., Climate, Trait_Categ, .keep_all = TRUE)
 
 
 ## and now a histogram plot of deltaAICc
@@ -137,7 +139,7 @@ ecdf(bothClim$WinDur[bothClim$Climate == 'Precipitation'])(1)  ## 31%
 
 
 bothClimate$dataset <-  'Full'
-bothCl <- bind_rows(bothClimate, bothClim)
+bothCl <- dplyr::bind_rows(bothClimate, bothClim)
 
 ## summary stats
 summar_winDur <- bothCl %>%
@@ -161,7 +163,7 @@ plot_winDur <- ggplot(bothCl, aes(x = WinDur)) + geom_histogram(binwidth = 1) +
             aes(x = x, y = y, label = lab_txt),
             fontface = 'bold', size = 5)
 
-pdf('./plots_ms/FigS17_Histogram_WinDur_Full&Reduced.pdf')
+pdf('./plots_ms/FigS16_Histogram_WinDur_Full&Reduced.pdf')
 print(plot_winDur)
 dev.off()
 
@@ -196,7 +198,7 @@ pl_Cstat_pVal <- ggplot(bothClim, aes(x = P.Value)) +
             fontface = 'bold', size = 6)
 
 
-pdf('./plots_ms/FigS8_Cstat_Pval_Clim&TraitCateg.pdf',
+pdf('./plots_ms/FigS6_Cstat_Pval_Clim&TraitCateg.pdf',
     height = 10, width = 10)
 print(pl_Cstat_pVal)
 dev.off()
@@ -204,12 +206,12 @@ dev.off()
 # some stats for the SI
 prop_More05 <- bothClim %>%
   dplyr::group_by(Trait_Categ) %>%
-  dplyr::mutate(More05 = case_when(
+  dplyr::mutate(More05 = dplyr::case_when(
     P.Value >= 0.05 ~ 1,
     P.Value < 0.05 ~ 0)) %>%
-  summarize(Sum_more05 = sum(More05),
-            Tot = n()) %>%
-  mutate(prop = Sum_more05 / Tot)
+  dplyr::summarize(Sum_more05 = sum(More05),
+            Tot = dplyr::n()) %>%
+  dplyr::mutate(prop = Sum_more05 / Tot)
 
 # IV. Further description of window duration and Cstat ---------------------------------------
 ## some description of the window analyses
