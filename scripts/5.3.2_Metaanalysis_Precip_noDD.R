@@ -6,11 +6,13 @@
 ## including covariates only in the needed models (i.e.
 ## where response is related to climate, and hence to the climatic window)
 
+library(tidyverse)
 library(metafor)
 library(ggplot2)
 library(magrittr)
 library(ape)
 library(corrplot)
+library(sTraitChange)
 
 
 ## Read in the data
@@ -25,28 +27,8 @@ length(unique(Coefs_Aut$ID))  ## 209
 ## read in the trait data and merge
 traits <- read.csv('./data/speciesTraits.csv')
 
-## some preparation of the trait data prior to use
-## adding two alternative diet classif + fixing the migratory mode
-traits$Diet.5Cat_Elton <- trimws(traits$Diet.5Cat_Elton, 'both')
-traits_proc <- traits %>%
-  dplyr::mutate(., DietPS = dplyr::case_when(
-    Diet.5Cat_Elton %in% c('Herbivore', 'PlantSeed') ~ 'primary consumer',
-    Diet.5Cat_Elton %in% c('Invertebrate', 'Insectivore') ~ 'secondary consumer, invert',
-    Diet.5Cat_Elton %in% c('Carnivore', 'VertFish', 'VertFishScav') ~ 'secondary consumer, vert',
-    Diet.5Cat_Elton %in% c('Omnivore', 'VertInvertEggs', 'InvertFish') ~ 'secondary consumer, omnivore'),
-    Diet_HCO = dplyr::case_when(
-      Diet.5Cat_Elton %in% c('Herbivore', 'PlantSeed') ~ 'herbivore',
-      Diet.5Cat_Elton %in% c('Omnivore') ~ 'omnivore',
-      Diet.5Cat_Elton %in% c('Invertebrate', 'Insectivore', 'Carnivore',
-                             'VertFish', 'VertFishScav', 'VertInvertEggs', 'InvertFish') ~ 'carnivore'),
-    Migrat = dplyr::case_when(
-      Migratory.mode_Sibly %in% c('nonmigrant', 'resident', 'nonmigrant???') ~ 'resident',
-      Migratory.mode_Sibly %in% c('migrant') ~ 'migrant',
-      TRUE ~ 'unknown'))
-
-traits_sub <- subset(traits_proc, select = c(Species, GenLength_y_IUCN, concern_IUCN, reprod_rate))
+traits_sub <- subset(traits, select = c(Species, GenLength_y_IUCN))
 Coefs_Aut_sp <- merge(Coefs_Aut, traits_sub, by = 'Species', all.x = TRUE)
-
 
 # read in the phylo tree
 vert_tree <- read.tree('./data/phylogenies_100/vert1.tre')
@@ -97,12 +79,8 @@ for(i in 1:(nrow(Mat_phylo))){
   if (is.na(check)){
     print(paste(rownames(Mat_phylo)[i], 'is not in the dataset', sep = ' '))}
 }
-# "Thalassarche_chlororhynchos is not in the dataset"
-# So we have to drop this species from the tree as well - dropped now
 
 
-# correcting for the Oppel's study the entry for weather qauality: it is "2"
-Coefs_Aut_sp$WeathQ[Coefs_Aut_sp$WeathQ == ''] <-  "2"
 Coefs_Aut_sp %<>% mutate(across(where(is_character), as_factor))
 
 
