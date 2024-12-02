@@ -1,11 +1,11 @@
 # this script attempts to explain the heterogeneity in paths
 # focusing on phenological responses to temperature
-# by specific trait types
+# by specific trait types and taxon (as categorical variable)
 
-library(ggpubr)
 library(sTraitChange)
 library(tidyverse)
-
+library(ape)
+library(magrittr)
 
 # 1. data read-in  and prepare --------------------------------------------
 Coefs_Aut <- readRDS(file = './output_fSEM_temp/PathCoefs_allMods_Temp_Weights_DD_Autocor.RDS')
@@ -17,33 +17,14 @@ length(unique(Coefs_Aut$ID))  ## 202 (from initial 210)
 
 
 ## read in the trait data and merge
-traits <- read.csv('./data-raw/speciesTraits.csv')
+traits <- read.csv('./data/speciesTraits.csv')
 
-## some preparation of the trait data prior to use
-## adding two alternative diet classif + fixing the migratory mode
-traits$Diet.5Cat_Elton <- trimws(traits$Diet.5Cat_Elton, 'both')
-traits_proc <- traits %>%
-  dplyr::mutate(., DietPS = dplyr::case_when(
-    Diet.5Cat_Elton %in% c('Herbivore', 'PlantSeed') ~ 'primary consumer',
-    Diet.5Cat_Elton %in% c('Invertebrate', 'Insectivore') ~ 'secondary consumer, invert',
-    Diet.5Cat_Elton %in% c('Carnivore', 'VertFish', 'VertFishScav') ~ 'secondary consumer, vert',
-    Diet.5Cat_Elton %in% c('Omnivore', 'VertInvertEggs', 'InvertFish') ~ 'secondary consumer, omnivore'),
-    Diet_HCO = dplyr::case_when(
-      Diet.5Cat_Elton %in% c('Herbivore', 'PlantSeed') ~ 'herbivore',
-      Diet.5Cat_Elton %in% c('Omnivore') ~ 'omnivore',
-      Diet.5Cat_Elton %in% c('Invertebrate', 'Insectivore', 'Carnivore',
-                             'VertFish', 'VertFishScav', 'VertInvertEggs', 'InvertFish') ~ 'carnivore'),
-    Migrat = dplyr::case_when(
-      Migratory.mode_Sibly %in% c('nonmigrant', 'resident', 'nonmigrant???') ~ 'resident',
-      Migratory.mode_Sibly %in% c('migrant') ~ 'migrant',
-      TRUE ~ 'unknown'))
-
-traits_sub <- subset(traits_proc, select = c(Species, GenLength_y_IUCN, concern_IUCN, reprod_rate))
+traits_sub <- subset(traits, select = c(Species, GenLength_y_IUCN))
 Coefs_Aut_sp <- merge(Coefs_Aut, traits_sub, by = 'Species', all.x = TRUE)
 
 
 # read in the phylo tree
-vert_tree <- read.tree('./data/phylogenies/vert1.tre')
+vert_tree <- read.tree('./data/phylogenies_100/vert1.tre')
 plot(vert_tree)
 is.ultrametric(vert_tree)
 # get the matrix of phylogenetic correlations
@@ -214,7 +195,7 @@ meta_Phen_CZ_bySpeTrait <- fit_meta_phylo(data_MA = Coefs_phen,
                                   A = Mat_phylo,
                                   Trait = FALSE, des.matrix = 'identity')
 meta_Phen_CZ_bySpeTrait$data
-# Okay, significant effect of the type of measure we use. This is in a way good
+# a significant effect of the type of measure we use. This is in a way good
 # may be good to plot this in a supplement figure, or at least give as a table
 
 CZ_bySpecTrait <- meta_Phen_CZ_bySpeTrait$data[[1]] %>%
@@ -241,9 +222,7 @@ CZ_bySpecTrait$pval <- NULL
 
 save_xlsx(table = CZ_bySpecTrait, table_name = './tables/Explain_CZHeterogen_SpecificTraits')
 
-
-
-
+# heterogeneity in each path - explain by taxon
 meta_phen_HeterTax <- fit_all_meta(data_MA = Coefs_phen,
                               Demog_rate = NULL,
                               Trait_categ = 'Phenological',
@@ -263,17 +242,8 @@ meta_phen_HeterTax <- fit_all_meta(data_MA = Coefs_phen,
                                                 'GR<-det_Clim'))
 meta_phen_HeterTax$meta_res
 
-
-
-meta_Phen_CZ_byTaxon <- fit_meta_phylo(data_MA = Coefs_phen,
-                                       Type_EfS = 'Trait_mean<-det_Clim', COV = 'Pvalue',
-                                       Cov_fact = 'Taxon',  DD = 'n_effectGR', simpleSEM = TRUE,
-                                       A = Mat_phylo,
-                                       Trait = FALSE, des.matrix = 'identity')
-meta_Phen_CZ_byTaxon$data
-## also difference by taxon
-
-CZ_byTaxon<- meta_Phen_CZ_byTaxon$data[[1]] %>%
+CZ_byTaxon<- meta_phen_HeterTax$meta_res[[1]] %>%
+  dplyr::filter(Relation == 'Trait_mean<-det_Clim') %>%
   dplyr::select(., Levels_Covar, Estimate, SError,
                 EfS_Low, EfS_Upper, Chi2, pval_Covar) %>%
   dplyr::rename(., Variable = Levels_Covar,
@@ -297,9 +267,7 @@ CZ_byTaxon$pval <- NULL
 
 save_xlsx(table = CZ_byTaxon, table_name = './tables/Explain_CZHeterogen_byTaxon')
 
-
-
-# 4. Heterogeneity in ZG and CG --------------------------------------------
+# save also for ZG and CG results
 meta_Phen_ZG_byTaxon <- fit_meta_phylo(data_MA = Coefs_phen,
                                        Type_EfS = 'GR<-Trait_mean', COV = 'Pvalue',
                                        Cov_fact = 'Taxon',  DD = 'n_effectGR', simpleSEM = TRUE,
@@ -308,7 +276,8 @@ meta_Phen_ZG_byTaxon <- fit_meta_phylo(data_MA = Coefs_phen,
 meta_Phen_ZG_byTaxon$data
 
 
-ZG_byTaxon<- meta_Phen_ZG_byTaxon$data[[1]] %>%
+ZG_byTaxon <- meta_phen_HeterTax$meta_res[[1]] %>%
+  dplyr::filter(Relation == 'GR<-Trait_mean') %>%
   dplyr::select(., Levels_Covar, Estimate, SError,
                 EfS_Low, EfS_Upper, Chi2, pval_Covar) %>%
   dplyr::rename(., Variable = Levels_Covar,
@@ -333,16 +302,8 @@ ZG_byTaxon$pval <- NULL
 save_xlsx(table = ZG_byTaxon, table_name = './tables/Explain_ZGHeterogen_byTaxon')
 
 
-meta_Phen_CG_byTaxon <- fit_meta_phylo(data_MA = Coefs_phen,
-                                        Type_EfS = 'GR<-det_Clim', COV = 'Pvalue',
-                                        Cov_fact = 'Taxon',  DD = 'n_effectGR', simpleSEM = TRUE,
-                                        A = Mat_phylo,
-                                        Trait = FALSE, des.matrix = 'identity')
-meta_Phen_CG_byTaxon$data
-
-
-
-CG_byTaxon<- meta_Phen_CG_byTaxon$data[[1]] %>%
+CG_byTaxon <- meta_phen_HeterTax$meta_res[[1]] %>%
+  dplyr::filter(Relation == 'GR<-det_Clim') %>%
   dplyr::select(., Levels_Covar, Estimate, SError,
                 EfS_Low, EfS_Upper, Chi2, pval_Covar) %>%
   dplyr::rename(., Variable = Levels_Covar,
