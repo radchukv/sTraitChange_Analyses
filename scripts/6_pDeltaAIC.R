@@ -118,7 +118,7 @@ dat_lab$expres <- sapply(as.numeric(dat_lab$round_slope), function(x){
   deparse(bquote(paste(beta, ' = ', .(x))))
 })
 
-pdf('./plots_ms/FigS15_PdeltaAICc_vs_NumYears_byTraitCateg_Climate.pdf',
+pdf('./plots_ms/FigS14_PdeltaAICc_vs_NumYears_byTraitCateg_Climate.pdf',
     width = 10, height = 10)
 ggplot(ind, aes(NYears, Pvalue)) + geom_point(alpha = 0.6) +
   theme_bw() + ylab(bquote(P[Delta*AICc])) +
@@ -174,7 +174,7 @@ dat_lab <- data.frame(x = rep(0, 4), y = rep(1.2, 4),
 CZ_only <- Coefs_all %>%
   filter(Relation == 'Trait_mean<-det_Clim')
 
-pdf('./plots_ms/FigS16_Relation_PValue&Estimate_ByTraitCateg_Climate.pdf',
+pdf('./plots_ms/FigS15_Relation_PValue&Estimate_ByTraitCateg_Climate.pdf',
     width  = 10, height = 10)
 CZ_only %>%
   dplyr::filter(.,  Relation == 'Trait_mean<-det_Clim') %>%
