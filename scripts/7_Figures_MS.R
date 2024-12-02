@@ -4,9 +4,11 @@ library(ggplot2)
 library(patchwork)
 library(tidyverse)
 library(magrittr)
-library(ggnewscale)
-library(ggExtra)
+library(sTraitChange)
 library(ggtext) ## needed for element_markdown() for the labs
+#library(ggnewscale)
+#library(ggExtra)
+
 
 
 # 1. Figure for SEMs, with temp and precip  --------
@@ -204,7 +206,7 @@ p_Morph <- plot_hist_points(data_allEstim = all_Es,
 
 
 
-pdf('./plots_ms/FigS5_DistributionEffectSizes_PerTrait&Climate.pdf', width = 9, height = 7)
+pdf('./plots_ms/FigS9_DistributionEffectSizes_PerTrait&Climate.pdf', width = 9, height = 7)
 p_Morph + p_Phen +
   plot_layout(guides = 'collect') +
   plot_annotation(tag_levels = "a") &
@@ -318,7 +320,7 @@ Fig_DD <- ggplot(ef_all_DD, aes(x = Estimate, y = yAx)) +
   geom_text(data = axisLab, aes(x = x, y = y, label= label), angle = 90)
 
 ## output the figure
-pdf('plots_ms/FigS14_SensitivityDD.pdf', width = 8, height = 6)
+pdf('plots_ms/FigS13_SensitivityDD.pdf', width = 8, height = 6)
 print(Fig_DD)
 dev.off()
 
@@ -428,7 +430,7 @@ Fig_Pval <- ggplot(ef_all_P, aes(x = Estimate, y = yAx)) +
 
 
 
-pdf('./plots_ms/FigS13_Sensitivity_PdeltaAICc.pdf', width = 8, height = 5)
+pdf('./plots_ms/FigS12_Sensitivity_PdeltaAICc.pdf', width = 8, height = 5)
 print(Fig_Pval)
 dev.off()
 
@@ -524,7 +526,6 @@ precip_std <- precip_GRRes %>%
   dplyr::mutate(Climatic_var = 'Precipitation')
 precip_std$GR <- as.numeric(precip_std$GR[,1])
 
-#all_std <- rbind(temp_std, precip_std)
 
 
 
@@ -592,8 +593,7 @@ PhenT_CZ <- plot_concept(Trait_categ = 'Phenological',
                          yvar_raw = 'Trait_mean',
                          slope_ES = 'Estimate/Trait_mean<-det_Clim',
                          ylab = 'Phenology, Z',
-                         xlab = 'Temperature, C',
-                         ClEfSpecific = FALSE)
+                         xlab = 'Temperature, C')
 PhenT_ZG <- plot_concept(Trait_categ = 'Phenological',
                          raw_dat = temp_std,
                          GlobES_dat = globES_T,
@@ -603,8 +603,7 @@ PhenT_ZG <- plot_concept(Trait_categ = 'Phenological',
                          yvar_raw = 'GR',
                          slope_ES = 'Estimate/GR<-Trait_mean',
                          ylab = 'Population growth rate, G',
-                         xlab = 'Phenology, Z | Temperature, C',
-                         ClEfSpecific = FALSE)
+                         xlab = 'Phenology, Z | Temperature, C')
 PhenT_CG <- plot_concept(Trait_categ = 'Phenological',
                          raw_dat = temp_std,
                          GlobES_dat = globES_T,
@@ -614,12 +613,10 @@ PhenT_CG <- plot_concept(Trait_categ = 'Phenological',
                          yvar_raw = 'GR',
                          slope_ES = 'Estimate/GR<-det_Clim',
                          ylab = 'Population growth rate, G',
-                         xlab = 'Temperature, C | Phenology, Z',
-                         ClEfSpecific = FALSE)
+                         xlab = 'Temperature, C | Phenology, Z')
 PhenT_CZGvsCG <- pl_conc_DirInd(Trait_categ = 'Phenological',
                                 GlobES_dat = globES_T,
                                 ES_dat = wide_tempES_all,
-                                ClEfSpecific = FALSE,
                                 xlab = 'Phenology-mediated effect <br> of temperature on G (CZ)',
                                 ylab = 'Direct effect of temperature on G (CG)')$plot
 
@@ -711,7 +708,6 @@ PhenT_CZvsZG_col <- ggplot(ES_datPhen,
                          name = 'CZG estimate')
 
 
-##scale_colour_gradientn(colours = terrain.colors(10))
 pdf('./output_all/CZvsZG_colourMagnCZG.pdf')
 PhenT_CZvsZG_col
 dev.off()
@@ -890,8 +886,7 @@ MorphT_CZ <- plot_concept(Trait_categ = 'Morphological',
                                 yvar_raw = 'Trait_mean',
                                 slope_ES = 'Estimate/Trait_mean<-det_Clim',
                                 expression(paste('Morphology, ', Z[mo])),
-                                xlab = expression(paste('Temperature, ', C[te])),
-                                ClEfSpecific = FALSE)
+                                xlab = expression(paste('Temperature, ', C[te])))
 MorphT_ZG <- plot_concept(Trait_categ = 'Morphological',
                                 raw_dat = temp_std,
                                 GlobES_dat = globES_T,
@@ -901,8 +896,7 @@ MorphT_ZG <- plot_concept(Trait_categ = 'Morphological',
                                 yvar_raw = 'GR',
                                 slope_ES = 'Estimate/GR<-Trait_mean',
                                 ylab = 'Population growth rate, G',
-                                xlab = expression(paste('Morphology, ', Z[mo], ' | Temperature, ', C[te])),
-                                ClEfSpecific = FALSE)
+                                xlab = expression(paste('Morphology, ', Z[mo], ' | Temperature, ', C[te])))
 MorphT_CG <- plot_concept(Trait_categ = 'Morphological',
                          raw_dat = temp_std,
                          GlobES_dat = globES_T,
@@ -912,12 +906,10 @@ MorphT_CG <- plot_concept(Trait_categ = 'Morphological',
                          yvar_raw = 'GR',
                          slope_ES = 'Estimate/GR<-det_Clim',
                          ylab = 'Population growth rate, G',
-                         xlab = 'Climate, C | Trait, Z',
-                         ClEfSpecific = FALSE)
+                         xlab = 'Climate, C | Trait, Z')
 MorphT_CZGvsCG <- pl_conc_DirInd(Trait_categ = 'Morphological',
                                 GlobES_dat = globES_T,
                                 ES_dat = wide_tempES_all,
-                                ClEfSpecific = FALSE,
                                 xlab = 'Morphology-mediated  effect <br> of temperature on G (C<sub>te</sub>Z<sub>mo</sub>G)',
                                 ylab = 'Direct effect of temperature on G (C<sub>te</sub>G)')$plot
 
@@ -983,7 +975,7 @@ CD
 E#
 "
 
-pdf('./plots_ms/FigS18_MorphT_CZvsZG_ColouredByCZGSign.pdf',
+pdf('./plots_ms/FigS17_MorphT_CZvsZG_ColouredByCZGSign.pdf',
     height = 13, width = 13)
 MorphT_CZ +
   MorphT_ZG +
@@ -1021,8 +1013,7 @@ PhenP_CZ <- plot_concept(Trait_categ = 'Phenological',
                                 yvar_raw = 'Trait_mean',
                                 slope_ES = 'Estimate/Trait_mean<-det_Clim',
                                 ylab = expression(paste('Phenology, ', Z[ph])),
-                                xlab = expression(paste('Precipitation, ', C[pr])),
-                                ClEfSpecific = FALSE)
+                                xlab = expression(paste('Precipitation, ', C[pr])))
 PhenP_ZG <- plot_concept(Trait_categ = 'Phenological',
                                 raw_dat = precip_std,
                                 GlobES_dat = globES_P,
@@ -1032,8 +1023,7 @@ PhenP_ZG <- plot_concept(Trait_categ = 'Phenological',
                                 yvar_raw = 'GR',
                                 slope_ES = 'Estimate/GR<-Trait_mean',
                                 ylab = 'Population growth rate, G',
-                                xlab = expression(paste('Phenology, ', Z[ph], ' | Precipitation, ', C[pr])),
-                                ClEfSpecific = FALSE)
+                                xlab = expression(paste('Phenology, ', Z[ph], ' | Precipitation, ', C[pr])))
 PhenP_CG <- plot_concept(Trait_categ = 'Phenological',
                                 raw_dat = precip_std,
                                 GlobES_dat = globES_P,
@@ -1043,12 +1033,10 @@ PhenP_CG <- plot_concept(Trait_categ = 'Phenological',
                                 yvar_raw = 'GR',
                                 slope_ES = 'Estimate/GR<-det_Clim',
                                 ylab = 'Population growth rate, G',
-                                xlab = 'Climate, C',
-                                ClEfSpecific = FALSE)
+                                xlab = 'Climate, C')
 PhenP_CZGvsCG <- pl_conc_DirInd(Trait_categ = 'Phenological',
                                        GlobES_dat = globES_P,
                                        ES_dat = wide_precES_all,
-                                       ClEfSpecific = FALSE,
                                        xlab = 'Phenology-mediated effect of <br> precipitation on G (C<sub>pr</sub>Z<sub>ph</sub>G)',
                                        ylab = 'Direct effect of precipitation on G (C<sub>pr</sub>G)')$plot
 
@@ -1115,7 +1103,7 @@ CD
 E#
 "
 
-pdf('./plots_ms/FigS19_PhenP_CZvsZG_ColouredByCZGSign.pdf',
+pdf('./plots_ms/FigS18_PhenP_CZvsZG_ColouredByCZGSign.pdf',
     height = 13, width = 13)
 PhenP_CZ +
   PhenP_ZG +
@@ -1154,8 +1142,7 @@ MorphP_CZ <- plot_concept(Trait_categ = 'Morphological',
                                  yvar_raw = 'Trait_mean',
                                  slope_ES = 'Estimate/Trait_mean<-det_Clim',
                                  ylab = expression(paste('Morphology, ', Z[mo])),
-                                 xlab = expression(paste('Precipitation, ', C[pr])),
-                                 ClEfSpecific = FALSE)
+                                 xlab = expression(paste('Precipitation, ', C[pr])))
 MorphP_ZG <- plot_concept(Trait_categ = 'Morphological',
                                  raw_dat = precip_std,
                                  GlobES_dat = globES_P,
@@ -1165,8 +1152,7 @@ MorphP_ZG <- plot_concept(Trait_categ = 'Morphological',
                                  yvar_raw = 'GR',
                                  slope_ES = 'Estimate/GR<-Trait_mean',
                                  ylab = 'Population growth rate, G',
-                                 xlab = expression(paste('Morphology, ', Z[mo], ' | Precipitation, ', C[pr])),
-                                 ClEfSpecific = FALSE)
+                                 xlab = expression(paste('Morphology, ', Z[mo], ' | Precipitation, ', C[pr])))
 MorphP_CG <- plot_concept(Trait_categ = 'Morphological',
                                  raw_dat = precip_std,
                                  GlobES_dat = globES_P,
@@ -1176,12 +1162,10 @@ MorphP_CG <- plot_concept(Trait_categ = 'Morphological',
                                  yvar_raw = 'GR',
                                  slope_ES = 'Estimate/GR<-det_Clim',
                                  ylab = 'Population growth rate, G',
-                                 xlab = 'Climate, C',
-                                 ClEfSpecific = FALSE)
+                                 xlab = 'Climate, C')
 MorphP_CZGvsCG <- pl_conc_DirInd(Trait_categ = 'Morphological',
                                         GlobES_dat = globES_P,
                                         ES_dat = wide_precES_all,
-                                        ClEfSpecific = FALSE,
                                         xlab = 'Morphology-mediated effect of <br> precipitation on G (C<sub>pr</sub>Z<sub>mo</sub>G)',
                                         ylab = 'Direct effect of precipitation on G (C<sub>pr</sub>G)')$plot
 ## plot of CZ vs ZG
@@ -1291,7 +1275,7 @@ tab_T$y <- rep(12, 2)
 tab_T <- tab_T[order(tab_T$Trait_Categ), ]
 tab_T$Lab <- letters[1:2]
 
-pdf('./plots_ms/FigS11_Distribution_EfSizes_Covariates_perTraitCateg_Temperature.pdf', width = 9)
+pdf('./plots_ms/FigS10_Distribution_EfSizes_Covariates_perTraitCateg_Temperature.pdf', width = 9)
 ggplot(ef_T, aes(x = Estimate, y = yAx)) +
   geom_vline(xintercept = 0, linetype = 'dashed', color = 'lightgrey', lwd = 1.1) +
   geom_errorbar(width=.1,
@@ -1341,7 +1325,7 @@ tab_P$Trait_Categ <- as.factor(tab_P$Trait_Categ)
 tab_P <- tab_P[order(tab_P$Trait_Categ), ]
 tab_P$Lab <- letters[1:2]
 
-pdf('./plots_ms/FigS12_Distribution_EfSizes_Covariates_perTraitCateg_Precip.pdf', width = 9)
+pdf('./plots_ms/FigS11_Distribution_EfSizes_Covariates_perTraitCateg_Precip.pdf', width = 9)
 ggplot(ef_P, aes(x = Estimate, y = yAx)) +
   geom_vline(xintercept = 0, linetype = 'dashed', color = 'lightgrey', lwd = 1.1) +
   geom_errorbar(width=.1,
