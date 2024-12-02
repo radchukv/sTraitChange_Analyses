@@ -1,14 +1,14 @@
-# this script analyses heterogeneity in paths
-# attempts to explain it by species characteristics and latitude,
-# according to hypotheses
-# focuses on the combination of phenology and temperature
+# this script analyses heterogeneity in paths derived with SEMs that
+# focused on the effects of temperature on phenological traits
+# attempts to explain the heterogeneity in these paths by
+# species characteristics and latitude,
+# according to the hypotheses outlined in the manuscript
 
-library(ggpubr)
 library(metafor)
 library(patchwork)
-library(multcomp)  ## not needed? check!
 library(tidyverse)
 library(magrittr)
+library(sTraitChange)
 
 # 0. data read-in  and prepare --------------------------------------------
 ## here read in the files with all thepath coefficeints, also those for indirect and total paths
@@ -23,7 +23,7 @@ Coefs <- rbind(Coefs_Aut, Coefs_Aut_prec)
 
 
 ## data on traits
-traits <- read.csv('./data-raw/speciesTraits.csv')
+traits <- read.csv('./data/speciesTraits.csv')
 
 ## some preparation of the trait data prior to use
 ## adding two alternative diet classif + fixing the migratory mode
@@ -610,7 +610,7 @@ tab_spSpecific_uni(mod_mv = mod_CG_PhenT_Diet,
 # 5.  Overall Plots -------------------------------------------------------
 
 # Figure with two panels onlY: effect of latitude and generation time
-pdf('./plots_ms/FigS4_3Panels_GenT_Diet&AbsLat_SD.pdf',
+pdf('./plots_ms/FigS3_3Panels_GenT_Diet&AbsLat_SD.pdf',
     width = 12, height = 5)
 plot_CZ_PhenT_AbsLat[[2]]  + plot_CZ_PhenT_Gen[[2]] +
   plot_CZ_PhenT_Diet +
