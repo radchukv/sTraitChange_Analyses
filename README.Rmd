@@ -37,8 +37,8 @@ This R project was tested on:
 
 In order to run the analyses, the following R packages must be installed: 
 ``` r
-install.packages(c('climwin', 'sTraitChange', 'metafor', 'patchwork', 'spaMM', 'ape', 'RRphylo', 
-'rtrees', 'geiger', 'corrplot', 'ggpubr', 'multcomp', 'ggnewscale', 'ggExtra', 'ggtext'))
+install.packages(c('climwin', 'sTraitChange', 'metafor', 'patchwork', 'spaMM', 'ape',
+'RRphylo', 'rtrees', 'geiger', 'corrplot', 'ggtext'))
 ```
 
 The following versions of these packages were used when the R project `sTraitChange_Analyses` was tested:
@@ -47,12 +47,8 @@ The following versions of these packages were used when the R project `sTraitCha
 "climwin 1.2.3"
 "corrplot 0.94"
 "geiger 2.0.11"
-"ggExtra 0.10.1"
-"ggnewscale 0.5.0"
-"ggpubr 0.6.0"
 "ggtext 0.1.2"
 "metafor 4.6.0"
-"multcomp 1.4.26"
 "patchwork 1.2.0"
 "rtrees 1.0.3"
 "spaMM 4.5.0"
@@ -65,9 +61,9 @@ The following versions of these packages were used when the R project `sTraitCha
 This project contains the following folders:  
 - data: datasets used in the analyses;   
 - output_SEM_all: general outputs from the analyses based on structural equation models (SEMs);   
-- output_forSEM_precip and output_forSEM_temp: the prepared datasets ready for running SEMs using, respectively precipitation and temperature as climate variables;      
-- output_fSEM_precip and output_fSEM_temp: the output from the SEM analyses, that are used later on in meta-analyses, obtained, using respectively precipitation and temperature as climate variables;     
-- output_fSEM_noDD_precip and output_fSEM_noDD_temp: the output from the SEM analyses conducted without population size included in SEM (sensitivity analyses: for details, see the manuscript). Some of these generated results are intermediate and are later used in meta-analyses. These results are obtained, using respectively precipitation and temperature as climate variable;    
+- output_forSEM_precip and output_forSEM_temp: the prepared datasets ready for running SEMs using, respectively, precipitation and temperature as climate variables;      
+- output_fSEM_precip and output_fSEM_temp: the output from the SEM analyses, obtained, using, respectively, precipitation and temperature as climate variables. These outpus are used later on in meta-analyses;     
+- output_fSEM_noDD_precip and output_fSEM_noDD_temp: the output from the SEM analyses conducted without population size included in SEM (sensitivity analyses: for details, see the manuscript). Some of these results are intermediate and are later used in meta-analyses. These results are obtained, using, respectively, precipitation and temperature as climate variables;    
 - output_all_noDD: general output from the analyses conducted when population size is not included in the SEM;   
 - output_all: general output obtained from the complete workflow;    
 - plots_ms: plots used in the manuscript;   
@@ -80,21 +76,21 @@ The scripts are numbered in the logical order in which they are used in the anal
 the user will have to download the climate data from the respective sources mentioned in Supplementary materials (Table S6) and place them in the respective directory on the path (./data).  
 
 Brief description of what each script does:   
-- **1.1_DataPrep_Clim.R**: prepares climate data for sliding window analyses using `climwin` package.  
+- **1.1_DataPrep_Clim.R**: prepares climate data for sliding window analyses using `climwin` package (will not run directly, see above!).  
 - **1.2_DataPrep_Biol.R**: prepares biological data for sliding window analyses using `climwin` package.    
 - **2_climwin.R**: performs sliding window analyses (will not run directly, see above!);    
 - **3.0_PrepData_forSEM.R**: prepares the data for SEM analyses;   
 - **3.1_SEM.R**: performs SEM analyses;    
 - **4.0_Descriptive.R**: provides description of the total dataset;   
 - **4.1_ClimwinWindows.R**: describes results from sliding window analyses;   
-- **4.2_NonLinAssumption.R**: assess non-linearity assumptions;   
+- **4.2_NonLinAssumption.R**: assesses non-linearity assumptions;   
 - **5.1_Phylo_prep.R**: prepares a mega-tree for performing meta-analyses that account for phylogenetic relatedness;   
 - **5.2.1_Metaanalysis_Temp.R**: meta-analyses focusing on temperature as climate variable;   
 - **5.2.2_Metaanalysis_Precip.R**: meta-analyses focusing on precipitation as climate variable;   
-- **5.3.1_Metaanalysis_Temp_noDD.R** & **5.3.2_Metaanalysis_Precip_noDD.R**: meta-analyses focusing, respectively on temperature and precipitation as climate variable and performed without the population size in SEM (sensitivity analyses);    
+- **5.3.1_Metaanalysis_Temp_noDD.R** & **5.3.2_Metaanalysis_Precip_noDD.R**: meta-analyses focusing, respectively, on temperature and precipitation as climate variables and performed without the population size included in SEM (sensitivity analyses);    
 - **5.4_Metaanalysis_AcrossPhylogenies.R**: a script running meta-analyses across 100 posterior phylogenies;    
 - **5.5_Metaanalysis_HeterogeneityPaths.R**: a script explaining the heterogeneity in the SEM paths with hypothesized predictors;   
-- **5.6_Metaanalysis_Heterogeneity_FineCatNames.R**: assessing the impact of the exact measured trait on heterogeneity in the phenotypic responses to climate;    
+- **5.6_Metaanalysis_Heterogeneity_FineCatNames.R**: assessing the impact of the fine trait category on heterogeneity in the phenotypic responses to climate;    
 - **6_pDeltaAIC.R**: exploration of the potential impact that pDeltaAIC has on the results;   
 - **7_Figures_MS.R**: Figures used in the manuscript.    
 

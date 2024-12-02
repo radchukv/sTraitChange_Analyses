@@ -6,8 +6,6 @@ library(tidyverse)
 library(magrittr)
 library(sTraitChange)
 library(ggtext) ## needed for element_markdown() for the labs
-#library(ggnewscale)
-#library(ggExtra)
 
 
 
