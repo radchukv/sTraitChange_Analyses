@@ -3,7 +3,8 @@
 
 library(ggplot2)
 library(tidyverse)
-
+library(sTraitChange)
+library(magrittr)
 
 # read in the results of SEMs on temperature
 Coefs_Aut <- readRDS(file = './output_fSEM_temp/PathCoefs_allMods_Temp_Weights_DD_Autocor.RDS')
@@ -54,7 +55,10 @@ ef_all <- rbind(test_phenT, test_morphT, test_phenP, test_morphP)
 
 # apply the function to 107 selected trees
 ## !!!!!!!! ATTENTION: takes long time to run !!!!!!!!!!!!
-## if desired, run overnight or on cluster
+## if desired, run overnight (on the machine with specs as in Readme)
+## or on cluster
+## Alternatively: read in the output file that is saved in
+## output_all (see below)
 start.time <- Sys.time()
 print(start.time)
 for(i in 2:108){
