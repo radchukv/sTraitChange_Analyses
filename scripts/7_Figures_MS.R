@@ -214,6 +214,40 @@ p_Morph + p_Phen +
 dev.off()
 
 
+# 1.1. Additional analyses: correlation between CZ and ZG -----------------
+cz_ef_temp <- subset(all_Es, Relation == 'Trait_mean<-det_Clim' & Climatic_var == 'Temperature')
+# this dataset contains phenol and morph studies in response to temperature
+cz_ef_prec <- subset(all_Es, Relation == 'Trait_mean<-det_Clim' & Climatic_var == 'Precipitation')
+# this dataset contains phenol and morph studies in response to precip
+
+zg_ef_temp <- subset(all_Es, Relation == 'GR<-Trait_mean' & Climatic_var == 'Temperature')
+zg_ef_prec <- subset(all_Es, Relation == 'GR<-Trait_mean' & Climatic_var == 'Precipitation')
+
+cz_zg_temp <- merge(cz_ef_temp, zg_ef_temp, by = 'ID')
+phen_cz_zg_temp <- subset(cz_zg_temp, Trait_Categ.x == 'Phenology')
+cor.test(x = phen_cz_zg_temp$Estimate.x, phen_cz_zg_temp$Estimate.y)
+# positive significant correlation between slopes: meaning if the cz slopes are
+# positive then zg wil also be positive. OR: if ZG are negative, zg will also be negative
+# this of course is reflected in Fig. 3 in the panel of CZ vs ZG
+# r  = 0.3269118; p-value = 0.001382, df= 91
+
+# morphology and temp:
+morph_cz_zg_temp <- subset(cz_zg_temp, Trait_Categ.x == 'Morphology')
+cor.test(x = morph_cz_zg_temp$Estimate.x, morph_cz_zg_temp$Estimate.y)
+# non-signif: r = 0.04719467, p = 0.626, df = 107
+
+# look at phenology relation with precipitation
+cz_zg_prec <- merge(cz_ef_prec, zg_ef_prec, by = 'ID')
+phen_cz_zg_prec <- subset(cz_zg_prec, Trait_Categ.x == 'Phenology')
+cor.test(x = phen_cz_zg_prec$Estimate.x, phen_cz_zg_prec$Estimate.y)
+# non-significant, but an indication of the negative weak correlation
+# r =-0.1437449 , df = 93, p = 0.1646
+
+# and morphology with precip:
+morph_cz_zg_prec <- subset(cz_zg_prec, Trait_Categ.x == 'Morphology')
+cor.test(x = morph_cz_zg_prec$Estimate.x, morph_cz_zg_prec$Estimate.y)
+# non-signif, positive: 0.1817777, p = 0.05186, df = 113
+
 # 2. SA: Figure sensitivity to DD  --------
 
 ## read in the effect sizes on temperature without DD
