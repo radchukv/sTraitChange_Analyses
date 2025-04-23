@@ -4,7 +4,7 @@ library(sTraitChange)
 library(ggplot2)
 library(tidyverse)
 library(magrittr)
-
+library(rr2)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 ####                 1. For temperature data                      ####
@@ -42,15 +42,15 @@ ID1_st_Aut <- fit_SEM(biol_data = temp_SEM, ID = 7,
 # `coef<-.corARMA`(`*tmp*`, value = value[parMap[, i]]) :
 #   Coefficient matrix not invertible
 fitted_SEM_Autoc <- lapply(unique(temp_SEM$ID)[- which(unique(temp_SEM$ID) %in%
-                                                         c(3, 221, 550))],
+                                                         c(3, 221, 550, 573, 582, 549))],
                              FUN = function(x){
                                fit_SEM(biol_data = temp_SEM, ID = x,
                                        out_SEM = 'output_fSEM_temp', DD = 'n_effectGR',
                                        weight = TRUE, correlation = TRUE,
                                        standardize = TRUE, Trait = FALSE,
-                                       simpleSEM = TRUE)
+                                       simpleSEM = TRUE)$SEM_results[[1]]
                              })
-length(fitted_SEM_Autoc)  ## 210
+length(fitted_SEM_Autoc)  ## 207
 
 
 # getting the results of SEM
@@ -62,7 +62,6 @@ Coefs_Aut <- extract_res_SEM(list_fitSEM = fitted_SEM_Autoc, stat_extr = 'coefs'
 
 ## read-in the previously saved Cstat_Aut
 #Cstat_Aut <- readRDS(file = './output_fSEM_temp/Cstat_allMods_Temp_Weights_DD_Autocorr.RDS')
-
 
 ## checking how Cstat p values look like
 pdf('./output_SEM_all/Cstat_allMods_Temp_Weights_DD_Autocor.pdf')
@@ -76,11 +75,11 @@ ggplot(Cstat_Aut, aes(P.Value)) + geom_histogram() +
                      axis.text = element_text(size = rel(1.5)),
                      strip.text = element_text(size = rel(1.7)))
 
-sum(Cstat_Aut$P.Value > 0.05) ## 162 studies pass the Cstat GOF test
+sum(Cstat_Aut$P.Value > 0.05) ## 160 studies pass the Cstat GOF test
 sum(Cstat_Aut$P.Value > 0.05) / nrow(Cstat_Aut)  ## 77%
 ## per trait category
 sum(Cstat_Aut$P.Value[Cstat_Aut$Trait_Categ == 'Phenological'] > 0.05) / nrow(Cstat_Aut[Cstat_Aut$Trait_Categ == 'Phenological', ])  ##71%
-sum(Cstat_Aut$P.Value[Cstat_Aut$Trait_Categ == 'Morphological'] > 0.05) / nrow(Cstat_Aut[Cstat_Aut$Trait_Categ == 'Morphological', ])  ##82%
+sum(Cstat_Aut$P.Value[Cstat_Aut$Trait_Categ == 'Morphological'] > 0.05) / nrow(Cstat_Aut[Cstat_Aut$Trait_Categ == 'Morphological', ])  ##83%
 
 ## a figure for P value of Cstat split by trait category, for Supplement
 summary_Cstat <- Cstat_Aut %>%
@@ -202,7 +201,63 @@ dev.off()
 saveRDS(object = Coefs_Aut, file = './output_fSEM_temp/PathCoefs_allMods_Temp_Weights_DD_Autocor.RDS')
 
 
+# 1.2.1  Extracting the variation parts - temp ----------------------------
 
+fitted_SEM_temp_var <- lapply(unique(temp_SEM$ID)[- which(unique(temp_SEM$ID) %in%
+                                                         c(3, 221, 550, 573, 582, 549))],
+                           FUN = function(x){
+                             fit_SEM(biol_data = temp_SEM, ID = x,
+                                     out_SEM = 'output_fSEM_temp', DD = 'n_effectGR',
+                                     weight = TRUE, correlation = TRUE,
+                                     standardize = TRUE, Trait = FALSE,
+                                     simpleSEM = TRUE)$partR2[[1]]
+                           })
+length(fitted_SEM_temp_var)  ## 207
+G_varpart_temp.df <- bind_rows(fitted_SEM_temp_var)
+
+# transform to have all R2 in one column
+G_varpart_temp_long <-
+  G_varpart_temp.df %>%
+  select(-FullR2_lik) %>%
+  pivot_longer(everything(),
+               names_to = "NamePart",
+               values_to = "R2")
+
+G_varpart_temp_long$NamePart <- as.factor(G_varpart_temp_long$NamePart)
+levels(G_varpart_temp_long$NamePart) <- c('Climate', 'PopSize', 'Trait')
+
+pdf('./plots_ms/FigSZZ_additional_VarPart_ING.pdf', height = 6, width = 10)
+ggplot(G_varpart_temp_long, aes(x = R2)) +
+  geom_histogram(fill = 'grey', color = 'grey') +
+  geom_vline(
+    data = . %>%
+      group_by(NamePart) %>%
+      summarise(med = median(R2)),
+    mapping = aes(xintercept = med),
+    col = 'red', lwd = 2) +
+  geom_text(data = . %>%
+              group_by(NamePart) %>%
+              summarise(med = median(R2)),
+            mapping = aes(x = med + 0.17, y = 20,
+                          label = paste(round(med, 2))),
+            col = 'red', size = 10) +
+  ylab("Count") +
+  xlab("Explained R2") +
+  facet_wrap(~NamePart) + theme_bw() +
+  theme(strip.background = element_rect(fill = 'white'),
+        strip.text = element_text(size = 20),
+        axis.title = element_text(size = 20),
+        axis.text = element_text(size = 15))
+dev.off()
+
+sum_temp <- G_varpart_temp_long %>%
+summarise(.by = c(NamePart),
+          median = median(R2),
+          min = min(R2),
+          max = max(R2),
+          perc5 = quantile(R2, 0.05),
+          perc95 = quantile(R2, 0.95))
+sum_temp
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 ####              1.3. SEMs no DD, weights, standard, autocor                         ####
@@ -221,16 +276,17 @@ SEM_ID1_st_Aut_noDD <- fit_SEM(biol_data = temp_SEM, ID = 7,
 
 # [- which(unique(temp_SEM$ID) %in%
 ## c(221, 412, 413, 573, 581, 582))]
-fitted_SEM_noDD <- lapply(unique(temp_SEM$ID),
+fitted_SEM_noDD <- lapply(unique(temp_SEM$ID)[- which(unique(temp_SEM$ID) %in%
+                                                        c(221, 573, 581, 582, 550))],
                            FUN = function(x){
                              fit_SEM(biol_data = temp_SEM, ID = x,
                                      out_SEM = 'output_fSEM_noDD_temp', #
                                      DD = 'none',
                                      weight = TRUE, correlation = TRUE,
                                      standardize = TRUE, Trait = FALSE,
-                                     simpleSEM = TRUE)
+                                     simpleSEM = TRUE)$SEM_results[[1]]
                            })
-length(fitted_SEM_noDD)  ##213
+length(fitted_SEM_noDD)  ##208
 
 
 # getting the results of SEM
@@ -341,7 +397,7 @@ fitted_SEM_Autoc_precip <- lapply(unique(precip_SEM$ID)[- which(unique(precip_SE
                                      out_SEM = 'output_fSEM_precip', DD = 'n_effectGR',
                                      weight = TRUE, correlation = TRUE,
                                      standardize = TRUE, Trait = FALSE,
-                                     simpleSEM = TRUE)
+                                     simpleSEM = TRUE)$SEM_results[[1]]
                            })
 length(fitted_SEM_Autoc_precip)  ## 211
 
@@ -469,18 +525,22 @@ saveRDS(object = Coefs_Aut_precip, file = './output_fSEM_precip/PathCoefs_allMod
 # Error in nlme::gls(GR ~ det_Clim + Trait_mean, correlation = nlme::corAR1(form = ~Year |  :
 #     false convergence (8)
 #     Called from: nlme::gls(GR ~ det_Clim + Trait_mean, correlation = nlme::corAR1(form = ~Year |
-#                                                                                                                                                           ID), method = "REML", data = dat)
+#  ID), method = "REML", data = dat)
 
-fitted_SEM_Autoc_precip_noDD <- lapply(unique(precip_SEM$ID)[- which(unique(precip_SEM$ID) %in%  c(581, 582))],
+# Currently fitting SEM for study 221 for species Stegonotus cucullatus in Flood plain of Adelaide River for AdultHeadLength
+# Error in glsEstimate(object, control = control) :
+#   computed "gls" fit is singular, rank 4
+
+fitted_SEM_Autoc_precip_noDD <- lapply(unique(precip_SEM$ID)[- which(unique(precip_SEM$ID) %in%  c(581, 582, 221))],
                                   FUN = function(x){
                                     fit_SEM(biol_data = precip_SEM, ID = x,
                                             out_SEM = 'output_fSEM_noDD_precip',
                                             DD = 'none',
                                             weight = TRUE, correlation = TRUE,
                                             standardize = TRUE, Trait = FALSE,
-                                            simpleSEM = TRUE)
+                                            simpleSEM = TRUE)$SEM_results[[1]]
                                   })
-length(fitted_SEM_Autoc_precip_noDD)  ## 210
+length(fitted_SEM_Autoc_precip_noDD)  ## 209
 
 
 # getting the results of SEM

@@ -72,7 +72,21 @@ Coefs_Aut_sp %<>%
   abs_lat = abs(Latitude)) %>%
   mutate(across(where(is_character), as_factor))
 
+# quick check of how many species have generation time > 2 years
+gen_time_check <- Coefs_Aut_sp %>%
+  distinct(., Species, .keep_all = TRUE) %>%
+filter(GenLength_y_IUCN.x <= 3) %>%
+  summarise(n())# 5 species
 
+pdf('./plots_ms/Fig_GenTimeDistribution_rebutt.pdf', width = 9)
+ggplot(gen_time_check, aes(x = GenLength_y_IUCN.x)) +
+  geom_histogram() +
+  geom_vline(
+    data = . %>% summarise(med = median(GenLength_y_IUCN.x, na.rm = TRUE)),
+    mapping = aes(xintercept = med),
+    col = 'red', lwd = 2) + theme_bw() +
+  xlab("Generation time, years") + theme(axis.title = element_text(size = 20))
+dev.off()
 
 
 # 1.  CZ  --------------------------------------------------------
