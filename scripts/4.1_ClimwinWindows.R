@@ -33,6 +33,12 @@ nrow(Cstat_Aut_precip)   ## 211
 ## binding the data from both datasets
 bothClimate <- rbind(Cstat_Aut, Cstat_Aut_precip)
 
+# read in the data on species characteristics (to be able to test whether the
+# window duration was associated with some sp characteristic)
+traits <- read.csv('./data/speciesTraits.csv')
+ClimTraits <- merge(bothClimate, traits, by = 'Species', all.x = TRUE)
+ClimTraits %<>% mutate(across(where(is_character), as_factor))
+
 
 # II. DeltaAIC,  pDeltaAIC & WinDur exploratory plots ---------------------
 
@@ -256,3 +262,24 @@ ggplot(Cstat_Aut, aes(deltaAIC)) + geom_histogram() +
                      axis.text = element_text(size = rel(1.5)),
                      strip.text = element_text(size = rel(1.7)))
 dev.off()
+
+
+# V. explore relation between window durations and sp characterist --------
+pdf("./output_all/Fig_RelationGenTime&WinDur.pdf", width = 9, height = 6)
+ggplot(ClimTraits, aes(x = GenLength_y_IUCN, y = WinDur)) +
+  geom_point() + facet_wrap(~Climate) +
+  theme_bw() + xlab('Generation time, years') +
+  ylab("Window duration, weeks") +
+  theme(strip.background = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.text = element_text(size = rel(1.1)))
+dev.off()
+
+
+cor.test(x = ClimTraits$WinDur[ClimTraits$Climate == "Temperature"],
+         y = ClimTraits$GenLength_y_IUCN[ClimTraits$Climate == "Temperature"])
+# cor r  = -0.1244045 t = -1.5609, df = 155, p-value = 0.1206
+
+cor.test(x = ClimTraits$WinDur[ClimTraits$Climate == "Precipitation"],
+         y = ClimTraits$GenLength_y_IUCN[ClimTraits$Climate == "Precipitation"])
+# cor r  = -0.01828421 t = -0.23059, df = 159, p-value = 0.8179
