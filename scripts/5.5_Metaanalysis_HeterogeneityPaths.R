@@ -73,10 +73,11 @@ Coefs_Aut_sp %<>%
   mutate(across(where(is_character), as_factor))
 
 # quick check of how many species have generation time > 2 years
+# for the rebuttal letter
 gen_time_check <- Coefs_Aut_sp %>%
-  distinct(., Species, .keep_all = TRUE) %>%
-filter(GenLength_y_IUCN.x <= 3) %>%
-  summarise(n())# 5 species
+  distinct(., Species, .keep_all = TRUE)
+#%>% filter(GenLength_y_IUCN.x <= 3) %>%
+# summarise(n())# 5 species
 
 pdf('./plots_ms/Fig_GenTimeDistribution_rebutt.pdf', width = 9)
 ggplot(gen_time_check, aes(x = GenLength_y_IUCN.x)) +
@@ -158,9 +159,9 @@ tab_spSpecific_uni(mod_mv = mod_CZ_PhenT_AbsLat,
 plot_CZ_PhenT_AbsLat <- plot_uni_spSpec(data_allEstim = CZ_PhenT_all,
                                mod_mv = mod_CZ_PhenT_AbsLat,
                                lOut = 10, xLab = 'Absolute latitude',
-                               yLab = 'CZ estimate',
+                               yLab = 'Effect of temperature on \n phenology (CZ)',
                                pdf_basename = './output_all/PlotCZ_PhenT_byAbsLat_SD',
-                               byHemisphere = FALSE,
+                               byHemisphere = TRUE,
                                miny = min(CZ_PhenT_all$Estimate) - 0.1,
                                maxy = max(CZ_PhenT_all$Estimate) + 0.1)
 
@@ -343,13 +344,13 @@ tab_spSpecific_uni(mod_mv = mod_ZG_PhenT_AbsLat,
 plot_ZG_PhenT_AbsLat <- plot_uni_spSpec(data_allEstim = ZG_PhenT_all,
                                                 mod_mv = mod_ZG_PhenT_AbsLat,
                                                 lOut = 10, xLab = 'Absolute latitude',
-                                                yLab = 'ZG Estimate',
+                                                yLab = 'Effect of phenology on\n population growth rate (ZG)',
                                                 pdf_basename = './output_all/PlotZG_PhenT_byAbsLat_SD',
                                           byHemisphere = TRUE,
                                         miny = min(CZ_PhenT_all$Estimate) - 0.1,
                                         maxy = max(CZ_PhenT_all$Estimate) + 0.1)
 
-
+plot_ZG_PhenT_AbsLat
 ## 2. Generation length
 mod_ZG_PhenT_Gen <- rma.mv(Estimate ~ GenLength_y_IUCN.y + Pvalue,
                            V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
@@ -454,7 +455,7 @@ tab_spSpecific_uni(mod_mv = mod_CZG_PhenT_AbsLat, table_name = './tables/CZG_Phe
 plot_CZG_PhenT_AbsLat <- plot_uni_spSpec(data_allEstim = CZG_PhenT_all,
                                         mod_mv = mod_CZG_PhenT_AbsLat,
                                         lOut = 10, xLab = 'Absolute latitude',
-                                        yLab = 'CZG Estimate',
+                                        yLab = 'Phenology-mediated effect of temperature \n on population growth rate (CZG)',
                                         pdf_basename = './output_all/PlotCZG_PhenT_byAbsLat',
                                         byHemisphere = TRUE,
                                         miny = min(CZ_PhenT_all$Estimate) - 0.1,
@@ -553,7 +554,8 @@ tab_spSpecific_uni(mod_mv = mod_CG_PhenT_all,
 ## 1.1. Absolute Latitude
 mod_CG_PhenT_AbsLat <- rma.mv(Estimate ~ abs_lat + Pvalue,
                          V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
-                         data = CG_PhenT_all, method = 'ML')
+                         data = CG_PhenT_all, method = 'ML',
+                         control = list(optimizer = 'uobyqa'))
 summary(mod_CG_PhenT_AbsLat)
 
 tab_spSpecific_uni(mod_mv = mod_CG_PhenT_AbsLat,
@@ -567,7 +569,7 @@ plot_CG_PhenT_AbsLat <- plot_uni_spSpec(data_allEstim = CG_PhenT_all,
                                                 mod_mv = mod_CG_PhenT_AbsLat,
                                                 lOut = 10,
                                                 xLab = 'Absolute latitude',
-                                                yLab = 'CG Estimate',
+                                                yLab = 'Direct effect of temperature on \n population growth rate (CG)',
                                                 pdf_basename = './output_all/PlotCG_PhenT_byAbsLat',
                                         byHemisphere = TRUE,
                                         miny = min(CZ_PhenT_all$Estimate) - 0.1,
