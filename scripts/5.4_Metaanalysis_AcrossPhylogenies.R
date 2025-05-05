@@ -100,7 +100,8 @@ ef_all_phylo <- ef_all %>%
   mutate(Phylobetter = ifelse(AIC_phylo < AIC_nophyl, "Yes", "No")) %>%
   group_by(Trait_Categ, Clim, Relation, phylo) %>%
   slice(1L) %>%
-  ungroup()
+  ungroup() %>%
+  mutate(lambda = Phylo.SD /(Species.SD + Phylo.SD))
 108*2*2*6  # 2592 ok
 nrow(ef_all_phylo)
 
@@ -108,3 +109,31 @@ nrow(ef_all_phylo[ef_all_phylo$Phylobetter == 'Yes', ]) /nrow(ef_all_phylo)  # 0
 # in none of the 108 replicates the model with phylocorrection fits
 # better than the model without accounting for phylogeny
 
+# checking the lambda
+ef_all_phylo %>%
+  dplyr::filter(.,  Relation == 'Trait_mean<-det_Clim') %>%
+ggplot(., aes(x = lambda)) + geom_histogram() +
+  facet_grid(Trait_Categ ~ Clim, scales = 'free_y') + theme_bw()
+
+ef_all_phylo %>%
+  dplyr::filter(.,  Relation == 'GR<-Trait_mean') %>%
+  ggplot(., aes(x = lambda)) + geom_histogram() +
+  facet_grid(Trait_Categ ~ Clim, scales = 'free_y') + theme_bw()
+
+ef_all_phylo %>%
+  dplyr::filter(.,  Relation == 'Ind_GR<-det_Clim') %>%
+  ggplot(., aes(x = lambda)) + geom_histogram() +
+  facet_grid(Trait_Categ ~ Clim, scales = 'free_y') + theme_bw()
+
+ef_all_phylo %>%
+  dplyr::filter(.,  Relation == 'GR<-det_Clim') %>%
+  ggplot(., aes(x = lambda)) + geom_histogram() +
+  facet_grid(Trait_Categ ~ Clim, scales = 'free_y') + theme_bw()
+
+# out of curiousity
+ef_all_phylo %>%
+  dplyr::filter(.,  Relation == 'GR<-Pop_mean') %>%
+  ggplot(., aes(x = lambda)) + geom_histogram() +
+  facet_grid(Trait_Categ ~ Clim, scales = 'free_y') + theme_bw()
+
+quantile(ef_all_phylo$lambda, probs = c(0.05, 0.1, 0.2, 0.5, 0.7, 0.9, 0.95), na.rm = TRUE)
