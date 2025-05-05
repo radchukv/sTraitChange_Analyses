@@ -128,6 +128,9 @@ tab_Trait_Tax <- table(data_descr$Trait_Categ, data_descr$Taxon)  ## Dem. rate b
 tab_Trait_Tax <- as.data.frame(tab_Trait_Tax)
 names(tab_Trait_Tax) <- c('Trait', 'Taxon', 'Count')
 
+# change the order of the levels
+tab_Trait_Tax$Taxon <- factor(tab_Trait_Tax$Taxon, levels = c('Bird', 'Fish', 'Mammal','Reptile'))
+
 plot_TaxByTraitCat <- ggplot(tab_Trait_Tax, aes(x = Trait, y = Count, fill = Taxon)) +
   geom_bar(stat= 'identity', position = position_dodge(),
            alpha = 0.7) +
@@ -201,8 +204,8 @@ print(map_tax)
 dev.off()
 
 
-vpTax_perTraitCat <- grid::viewport(width = 0.25, height = 0.25,
-                                    x = 0.745, y = 0.725, just = c('left', 'bottom'))
+vpTax_perTraitCat <- grid::viewport(width = 0.32, height = 0.25,
+                                    x = 0.675, y = 0.725, just = c('left', 'bottom'))
 
 # final map with the inset on the number of studies per taxon within each
 # trait category
@@ -391,4 +394,4 @@ dat_suppl$Trait[dat_suppl$Trait == 'NestDate'] <- 'OnsetBreeding'
 
 
 save_xlsx(table = dat_suppl, table_name = './tables/SupplementaryData_AllStudies')
-
+table(dat_suppl$Trait[dat_suppl$Trait_Categ == 'Phenological'])
