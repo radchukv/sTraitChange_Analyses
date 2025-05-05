@@ -6,6 +6,7 @@ library(tidyverse)
 library(magrittr)
 library(sTraitChange)
 library(ggtext) ## needed for element_markdown() for the labs
+library(grafify) # for colour-blind -friendly colour scheme
 
 
 
@@ -204,7 +205,7 @@ p_Morph <- plot_hist_points(data_allEstim = all_Es,
 
 
 
-pdf('./plots_ms/FigS9_DistributionEffectSizes_PerTrait&Climate.pdf', width = 9, height = 7)
+pdf('./plots_ms/FigS9test_DistributionEffectSizes_PerTrait&Climate.pdf', width = 9, height = 7)
 p_Morph + p_Phen +
   plot_layout(guides = 'collect') +
   plot_annotation(tag_levels = "a") &
@@ -316,10 +317,10 @@ ef_all_DD <- rbind(ef_all_noDD, ef_all)
 
 ## for these plots consider adding either shading fro each par-r or the lines separating each par-r, so that the points can be linked to the labels easily
 Fig_DD <- ggplot(ef_all_DD, aes(x = Estimate, y = yAx)) +
-  geom_vline(xintercept = 0, linetype = 'dashed', color = 'grey', lwd = 1.1) +
+  geom_vline(xintercept = 0, linetype = 'dashed', color = 'grey', lwd = 0.7) +
   geom_errorbar(width=.1,
-                aes(xmin = EfS_Low, xmax = EfS_Upper, colour = Col, linetype = DD), lwd = 0.4) +
-  geom_point(aes(shape = as.factor(DD), color = Col), alpha = 0.8, cex= 4) +  ## did not succeed with jittering both the lines and the points
+                aes(xmin = EfS_Low, xmax = EfS_Upper, colour = Col, linetype = DD), lwd = 1) +
+  geom_point(aes(shape = as.factor(DD), color = Col), alpha = 0.8, cex= 4, stroke = 1.4) +
   labs(x = 'Effect size', y = 'Relation') +
   facet_grid(. ~ Trait_Categ) +
   theme_bw() +
@@ -338,16 +339,16 @@ Fig_DD <- ggplot(ef_all_DD, aes(x = Estimate, y = yAx)) +
         panel.grid.minor = element_blank())  +
   geom_text(data = labs_df, aes(x = x, y =y, label = label), hjust=1) +
   coord_cartesian(clip = 'off', xlim = c(-2, 1.5)) +
-  scale_colour_manual(values = c("Signif, temperature" = "brown2",
-                                 "Non-signif, temperature" = "lightsalmon1",
-                                 "Signif, precipitation" = "royalblue1",
-                                 "Non-signif, precipitation" = "lightblue1"),
+  scale_colour_manual(values = c("Signif, temperature" = "brown4",
+                                 "Non-signif, temperature" = "darkorange2",
+                                 "Signif, precipitation" = "darkgreen",
+                                 "Non-signif, precipitation" = "springgreen3"),
                       name = 'Significance') +
   scale_shape_manual(values = c(21, 4), name = 'DD') +
   scale_linetype_manual(values = c('dotted', 'solid'), name = 'DD') +
   guides(color=guide_legend(nrow=2, byrow = TRUE)) +
-  geom_text(data = tab_T, aes(x = x, y= y, label = Count), col = "brown2") +
-  geom_text(data = tab_P, aes(x = x, y= y, label = Count), col = "royalblue1") +
+  geom_text(data = tab_T, aes(x = x, y= y, label = Count), col = "brown4") +
+  geom_text(data = tab_P, aes(x = x, y= y, label = Count), col = "darkgreen") +
   geom_text(data = label_facet, aes(x = x, y = y, label = lab), fontface = 'bold') +
   geom_text(data = axisLab, aes(x = x, y = y, label= label), angle = 90)
 
@@ -408,6 +409,7 @@ tab_P$y <- rep(5.5, 2)
 
 axisLab <- data.frame(x = c(-3.3), y = 3, label = 'Relation',
                       Trait_Categ = c('Morphology'))
+tab_T$Trait_Categ <- as.factor(tab_T$Trait_Categ)
 label_facet <- data.frame(lab = c('a', 'b'),
                           Trait_Categ = levels(tab_T$Trait_Categ),
                           x = rep(-1.8, 2), y = rep(6, 2))
@@ -416,7 +418,7 @@ label_facet <- data.frame(lab = c('a', 'b'),
 
 ef_all_noP$PdeltaAICc <- 'No'
 ef_all_subP$PdeltaAICc <- 'Yes'
-ef_all_subP$DD <- NULL
+#ef_all_subP$DD <- NULL
 
 ef_all_subP$yAx <- rep(1:6, 2)
 ef_all_noP$yAx <- rep(1:6, 2)
@@ -428,7 +430,8 @@ Fig_Pval <- ggplot(ef_all_P, aes(x = Estimate, y = yAx)) +
   geom_vline(xintercept = 0, linetype = 'dashed', color = 'grey', lwd = 1.1) +
   geom_errorbar(width=.1,
                 aes(xmin = EfS_Low, xmax = EfS_Upper, colour = Col, linetype = PdeltaAICc), lwd = 0.4) +
-  geom_point(aes(shape = as.factor(PdeltaAICc), color = Col), alpha = 0.8, cex = 4) +
+  geom_point(aes(shape = as.factor(PdeltaAICc), color = Col), alpha = 0.8,
+             cex = 4, stroke = 1.4) +
   labs(x = 'Effect size', y = 'Relation') +
   facet_grid(. ~ Trait_Categ) +
   theme_bw() +
@@ -447,16 +450,16 @@ Fig_Pval <- ggplot(ef_all_P, aes(x = Estimate, y = yAx)) +
         panel.grid.minor = element_blank())  +
   geom_text(data = labs_df, aes(x = x, y =y, label = label), hjust=1) +
   coord_cartesian(clip = 'off', xlim = c(-2, 1.5)) +
-  scale_colour_manual(values = c("Signif, temperature" = "brown2",
-                                 "Non-signif, temperature" = "lightsalmon1",
-                                 "Signif, precipitation" = "royalblue1",
-                                 "Non-signif, precipitation" = "lightblue1"),
+  scale_colour_manual(values = c("Signif, temperature" = "brown4",
+                                 "Non-signif, temperature" = "darkorange2",
+                                 "Signif, precipitation" = "darkgreen",
+                                 "Non-signif, precipitation" = "springgreen3"),
                       name = 'Significance') +
   scale_shape_manual(values = c(21, 4), name = 'PdeltaAICc') +
   scale_linetype_manual(values = c('dotted', 'solid'), name = 'PdeltaAICc') +
   guides(color=guide_legend(nrow=2, byrow = TRUE)) +
-  geom_text(data = tab_T, aes(x = x, y= y, label = Count), col = "brown2") +
-  geom_text(data = tab_P, aes(x = x, y= y, label = Count), col = "royalblue1") +
+  geom_text(data = tab_T, aes(x = x, y= y, label = Count), col = "brown4") +
+  geom_text(data = tab_P, aes(x = x, y= y, label = Count), col = "darkgreen") +
   geom_text(data = label_facet, aes(x = x, y = y, label = lab), fontface = 'bold') +
   geom_text(data = axisLab, aes(x = x, y = y, label= label), angle = 90)
 
@@ -625,7 +628,9 @@ PhenT_CZ <- plot_concept(Trait_categ = 'Phenological',
                          yvar_raw = 'Trait_mean',
                          slope_ES = 'Estimate/Trait_mean<-det_Clim',
                          ylab = 'Phenology, Z',
-                         xlab = 'Temperature, C')
+                         xlab = 'Temperature, C',
+                         col_var = 'Taxon', lwd_leg = 2.5)
+
 PhenT_ZG <- plot_concept(Trait_categ = 'Phenological',
                          raw_dat = temp_std,
                          GlobES_dat = globES_T,
@@ -635,7 +640,8 @@ PhenT_ZG <- plot_concept(Trait_categ = 'Phenological',
                          yvar_raw = 'GR',
                          slope_ES = 'Estimate/GR<-Trait_mean',
                          ylab = 'Population growth rate, G',
-                         xlab = 'Phenology, Z | Temperature, C')
+                         xlab = 'Phenology, Z | Temperature, C',
+                         col_var = 'Taxon', lwd_leg = 2.5)
 PhenT_CG <- plot_concept(Trait_categ = 'Phenological',
                          raw_dat = temp_std,
                          GlobES_dat = globES_T,
@@ -645,7 +651,8 @@ PhenT_CG <- plot_concept(Trait_categ = 'Phenological',
                          yvar_raw = 'GR',
                          slope_ES = 'Estimate/GR<-det_Clim',
                          ylab = 'Population growth rate, G',
-                         xlab = 'Temperature, C | Phenology, Z')
+                         xlab = 'Temperature, C | Phenology, Z',
+                         col_var = 'Taxon', lwd_leg = 2.5)
 PhenT_CZGvsCG <- pl_conc_DirInd(Trait_categ = 'Phenological',
                                 GlobES_dat = globES_T,
                                 ES_dat = wide_tempES_all,
@@ -693,28 +700,6 @@ pdf('./output_all/CZvsZG_colourExpect.pdf', height = 7.7, width = 7.7)
   PhenT_CZvsZG_bw
 dev.off()
 
-PhenT_CZvsZG_bw_nobg <- ggplot(ES_datPhen,
-                            aes(x = `Estimate/Trait_mean<-det_Clim`,
-                                y = `Estimate/GR<-Trait_mean`)) +
-    geom_point(alpha = 0.45, cex= 6) +
-    geom_hline(yintercept = 0, col = 'black', lty = 3) +
-    geom_vline(xintercept = 0, col = 'black', lty = 3) +
-    xlab('Effect of temperature on phenology (CZ)') +
-    ylab('Effect of phenology on G (ZG)') +
-    ylim(min(ES_datPhen$`Estimate/GR<-Trait_mean`) - 0.1,
-         max(ES_datPhen$`Estimate/GR<-Trait_mean`) + 0.1) +
-    theme_bw() + theme(legend.position = 'none',
-                       strip.background = element_blank(),
-                       panel.grid.minor = element_blank(),
-                       strip.text = element_text(size  =12),
-                       panel.grid.major = element_blank(),
-                       axis.title = element_text(size = 24),
-                       axis.text = element_text(size = 20))
-
-pdf('./output_all/CZvsZG_bw.pdf', height = 7, width = 7)
-PhenT_CZvsZG_bw_nobg
-dev.off()
-
 PhenT_CZvsZG_col <- ggplot(ES_datPhen,
        aes(x = `Estimate/Trait_mean<-det_Clim`,
            y = `Estimate/GR<-Trait_mean`, col = `Estimate/Ind_GR<-det_Clim`)) +
@@ -755,13 +740,15 @@ ES_datPhenT_CZG <- ES_datPhen %>%
   dplyr::mutate(CZG_magn= factor(CZG_magn)) %>%
   dplyr::mutate(CZG_magn = forcats::fct_relevel(CZG_magn, c("Non-negative", "Negative")))
 
+levels(ES_datPhenT_CZG$Taxon) <- c('Bird', 'Mammal',
+                                   'Reptile', 'Fish')
 PhenT_CZvsZG_CZGNonneg <- ggplot(ES_datPhenT_CZG,
                                aes(x = `Estimate/Trait_mean<-det_Clim`,
-                                   y = `Estimate/GR<-Trait_mean`, col = CZG_magn)) +
-  geom_point(alpha = 0.9, cex = 5) +
+                                   y = `Estimate/GR<-Trait_mean`, col = CZG_magn, shape = Taxon)) +
+  geom_point(alpha = 0.9, cex = 5, stroke = 2) +
   geom_hline(yintercept = 0, col = 'black', lty = 3) +
   geom_vline(xintercept = 0, col = 'black', lty = 3) +
-  xlab('Effect of temperature <br> on phenology (CZ)') +
+  xlab('Effect of temperature \n on phenology (CZ)') +
   ylab('Effect of phenology on G (ZG)') +
   ylim(min(ES_datPhen$`Estimate/GR<-Trait_mean`) - 0.1,
        max(ES_datPhen$`Estimate/GR<-Trait_mean`) + 0.1) +
@@ -773,64 +760,52 @@ PhenT_CZvsZG_CZGNonneg <- ggplot(ES_datPhenT_CZG,
                      axis.title = element_text(size = 20),
                      axis.text = element_text(size = 15),
                      legend.title = element_text(size = 20),
-                     legend.text = element_text(size = 20),
-                     axis.title.x = element_markdown(),
-                     axis.title.y = element_markdown()
-                     )  +
-  scale_color_brewer(palette = 'Dark2', name = 'Sign of the CZG')
+                     legend.text = element_text(size = 15),
+                     axis.title.y = element_text(margin = margin(t = 0, r = 0, b = 0, l = 0)),
+                     legend.box = "vertical",
+                     legend.spacing.y = unit(0, "pt"),
+                     plot.margin = margin(5.5,3,5.5,25, "pt"))  +
+  scale_shape_manual(values = c(21, 22, 24, 25)) +
+  scale_color_grafify(palette = 'safe', name = 'Sign of the CZG') #+
+  #guides(colour = guide_legend(nrow=2))
 PhenT_CZvsZG_CZGNonneg
 
-pdf('./output_all/CZvsZG_colourSignCZG.pdf')
+pdf('./output_all/CZvsZG_colourSignCZG_ShapeTaxon.pdf')
 print(PhenT_CZvsZG_CZGNonneg)
 dev.off()
 
-
-# combining the range of the CZG magnitude (point fill) with the positive/negative
-# for outline of the point
-PhenT_CZvsZG_mult <- ggplot(ES_datPhenT_CZG,
-                                 aes(x = `Estimate/Trait_mean<-det_Clim`,
-                                     y = `Estimate/GR<-Trait_mean`, col = CZG_magn,
-                                     fill = `Estimate/Ind_GR<-det_Clim`)) +
-  geom_point(alpha = 0.9, cex = 4, pch = 21, stroke = 2) +
-  geom_hline(yintercept = 0, col = 'black', lty = 3, lwd = 1.5) +
-  geom_vline(xintercept = 0, col = 'black', lty = 3, lwd = 1.5) +
-  xlab('Effect of temperature <br> on phenology (CZ)') +
-  ylab('Effect of phenology on G (ZG)') +
-  ylim(min(ES_datPhen$`Estimate/GR<-Trait_mean`) - 0.1,
-       max(ES_datPhen$`Estimate/GR<-Trait_mean`) + 0.1) +
-  theme_bw() +
-  theme(legend.position = 'bottom',
-        legend.box="vertical",
-        legend.margin=margin(),
-        strip.background = element_blank(),
-        panel.grid.minor = element_blank(),
-        strip.text = element_text(size =12),
-        panel.grid.major = element_blank(),
-        axis.title = element_text(size = 25),
-        axis.text = element_text(size = 20),
-        legend.title = element_text(size = 20),
-        legend.text = element_text(size = 20),
-        legend.key.width=unit(1.5,"cm"),
-        axis.title.x = element_markdown())  +
-  scale_color_brewer(palette = 'Dark2', name = 'Sign of the CZG') +
-  scale_fill_gradient2(low = 'red', mid = 'lightgrey',
-                         high = 'blue', midpoint = 0,
-                         name = 'CZG estimate')
-PhenT_CZvsZG_mult
-
-pdf('./output_all/Fig_CZvsZG_multGuides.pdf', height = 8, width = 7.7)
-print(PhenT_CZvsZG_mult)
-dev.off()
-
+### !!!! CLEAN this script to delete these
+## sep plots per panel
 # Saving the two other panels (on CZ and ZG, now with specific x labels)
-pdf('./plots_ms/Fig3_CZPan&ZGPan.pdf', height = 12, width = 7)
+pdf('./plots_ms/Fig3_CZPan&ZGPan_wColorTaxon.pdf', height = 12, width = 7)
 PhenT_ZG + PhenT_CZ +
-  plot_layout(nrow = 2)
+  plot_layout(nrow = 2, guides = 'collect') & theme(legend.position = 'bottom')
 dev.off()
 
 # Saving the plot CG as a regression (and not as a density plot)
 pdf('./plots_ms/Fig3_CG_Pan.pdf', height = 6, width = 6)
 PhenT_CG
+dev.off()
+
+
+# plotting the panels in a conventional order
+pdf('./plots_ms/Fig3_ConvOrder_ShapeTaxon.pdf', height = 10, width = 10)
+PhenT_CZ + PhenT_ZG + PhenT_CG + PhenT_CZvsZG_CZGNonneg +
+  plot_layout(guides = 'collect') +
+    plot_annotation(tag_levels = "a") & theme(plot.tag = element_text(face = 'bold', size = 20),
+                                              plot.tag.position  = c(-0.03, .98),
+                                              legend.position = 'bottom',
+                                              legend.box = 'vertical')
+dev.off()
+
+
+pdf('./plots_ms/FigS3_ConvOrder_ColourTaxon.pdf', height = 10, width = 10)
+PhenT_CZ + PhenT_ZG + PhenT_CG + PhenT_CZvsZG_CZGNonneg +
+  plot_layout(guides = 'collect') +
+  plot_annotation(tag_levels = "a") & theme(plot.tag = element_text(face = 'bold', size = 20),
+                                            plot.tag.position  = c(-0.03, .98),
+                                            legend.position = 'bottom',
+                                            legend.box = 'vertical')
 dev.off()
 
 
@@ -1389,4 +1364,73 @@ ggplot(ef_P, aes(x = Estimate, y = yAx)) +
             fontface = 'bold', size = 6) +
   guides(color= guide_legend(ncol=2, title = 'Effect', size = 14))
 dev.off()
+
+
+# 6. Plots per taxon ------------------------------------------------------
+
+
+## read in the effect sizes per taxon
+ef_Tax <- readRDS(file = './output_all/all_efSizes_temperature_Phen_ByTaxon.RDS')
+ef_Tax <- ef_Tax[order(ef_Tax$Taxon, ef_Tax$REL), ]
+ef_Tax$yAx <- rep(c(1:12), 2)
+labs_df <- data.frame(x = rep(-2.3, 6), y = c(2, 4, 5, 6, 8, 11),
+                      Taxon = rep(c('Bird'),  2),
+                      label =  as.character(levels(ef_Tax$REL)))
+
+# some labels are missing, assign
+ef_Tax$col_var[is.na(ef_Tax$col_var)] <- 'Weather quality non-significant'
+
+# modifying tab_T somewhat to produce the plot with intercept only
+unique_studiesTax <- allEs_T %>%
+  filter(Trait_Categ == 'Phenological') %>%
+  dplyr::distinct(., ID, .keep_all = TRUE)
+tab_Tr_Tax <- table(unique_studiesTax$Taxon)
+
+
+
+# temperature
+tab_tax <- as.data.frame(tab_Tr_Tax)
+colnames(tab_tax) <- c('Taxon', 'Count')
+tab_tax <- tab_tax[1:2, ]
+tab_tax$Taxon <- as.character(tab_tax$Taxon)
+
+tab_tax$x <- rep(1, 2)
+tab_tax$y <- rep(12, 2)
+tab_tax <- tab_tax[order(tab_tax$Taxon), ]
+tab_tax$Lab <- letters[1:2]
+
+pdf('./plots_ms/FigSYY_EfSizes_PerTaxon_TempPhen.pdf', width = 9)
+ggplot(ef_Tax, aes(x = Estimate, y = yAx)) +
+  geom_vline(xintercept = 0, linetype = 'dashed', color = 'lightgrey', lwd = 1.1) +
+  geom_errorbar(width=.1,
+                aes(xmin = EfS_Low, xmax = EfS_Upper, colour = col_var)) +
+  geom_point(aes(colour = col_var), cex= 4, pch = 21) +
+  labs(x = 'Effect size', y = '') +
+  facet_grid(cols = vars(Taxon)) +
+  theme_bw() + theme(axis.title.y = element_blank(),
+                     axis.text.y=element_blank(),
+                     axis.ticks.y=element_blank(),
+                     plot.margin = margin(0.2, 0.2, 1.5, 4, unit = 'line'),
+                     legend.position = 'bottom',
+                     strip.background = element_blank(),
+                     strip.text = element_text(size = 14),
+                     axis.text = element_text(color = 'black', size = 11),
+                     legend.text = element_text(size = 12),
+                     axis.title = element_text(size = 14))  +
+  geom_text(data = labs_df, aes(x = x, y =y, label = label), hjust=1,
+            size = 4.5) +
+  coord_cartesian(clip = 'off', xlim = c(-2, 2)) +
+  scale_colour_manual(values = c("Intercept non-significant" = "gray",
+                                 "Intercept significant" = "black",
+                                 "Pvalue non-significant" = "orange",
+                                 "Pvalue significant" = "red",
+                                 "Weather quality non-significant" = "lightblue",
+                                 "Weather quality significant" = "blue")) +
+  guides(colour=guide_legend('Legend')) +
+  geom_text(data = tab_tax, aes(x = x, y= y, label = paste(Count, 'studies'))) +
+  geom_text(data = tab_tax, aes(y = y, x = -1.9, label= Lab),
+            fontface = 'bold', size = 6) +
+  guides(color= guide_legend(ncol=2, title = 'Effect', size = 14))
+dev.off()
+
 
