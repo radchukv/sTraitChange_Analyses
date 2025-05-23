@@ -628,8 +628,7 @@ PhenT_CZ <- plot_concept(Trait_categ = 'Phenological',
                          yvar_raw = 'Trait_mean',
                          slope_ES = 'Estimate/Trait_mean<-det_Clim',
                          ylab = 'Phenology, Z',
-                         xlab = 'Temperature, C',
-                         col_var = 'Taxon', lwd_leg = 2.5)
+                         xlab = "Temperature<sub>d</sub>, C")
 
 PhenT_ZG <- plot_concept(Trait_categ = 'Phenological',
                          raw_dat = temp_std,
@@ -640,8 +639,7 @@ PhenT_ZG <- plot_concept(Trait_categ = 'Phenological',
                          yvar_raw = 'GR',
                          slope_ES = 'Estimate/GR<-Trait_mean',
                          ylab = 'Population growth rate, G',
-                         xlab = 'Phenology, Z | Temperature, C',
-                         col_var = 'Taxon', lwd_leg = 2.5)
+                         xlab = 'Phenology, Z | Temperature<sub>d</sub>, C')
 PhenT_CG <- plot_concept(Trait_categ = 'Phenological',
                          raw_dat = temp_std,
                          GlobES_dat = globES_T,
@@ -651,8 +649,7 @@ PhenT_CG <- plot_concept(Trait_categ = 'Phenological',
                          yvar_raw = 'GR',
                          slope_ES = 'Estimate/GR<-det_Clim',
                          ylab = 'Population growth rate, G',
-                         xlab = 'Temperature, C | Phenology, Z',
-                         col_var = 'Taxon', lwd_leg = 2.5)
+                         xlab = 'Temperature<sub>d</sub>, C | Phenology, Z')
 PhenT_CZGvsCG <- pl_conc_DirInd(Trait_categ = 'Phenological',
                                 GlobES_dat = globES_T,
                                 ES_dat = wide_tempES_all,
@@ -748,7 +745,7 @@ PhenT_CZvsZG_CZGNonneg <- ggplot(ES_datPhenT_CZG,
   geom_point(alpha = 0.9, cex = 5, stroke = 2) +
   geom_hline(yintercept = 0, col = 'black', lty = 3) +
   geom_vline(xintercept = 0, col = 'black', lty = 3) +
-  xlab('Effect of temperature \n on phenology (CZ)') +
+  xlab('Effect of Temperature<sub>d</sub><br> on phenology (CZ)') +
   ylab('Effect of phenology on G (ZG)') +
   ylim(min(ES_datPhen$`Estimate/GR<-Trait_mean`) - 0.1,
        max(ES_datPhen$`Estimate/GR<-Trait_mean`) + 0.1) +
@@ -759,9 +756,11 @@ PhenT_CZvsZG_CZGNonneg <- ggplot(ES_datPhenT_CZG,
                      panel.grid.major = element_blank(),
                      axis.title = element_text(size = 20),
                      axis.text = element_text(size = 15),
+                     axis.title.x = ggtext::element_markdown(),
+                     axis.title.y = ggtext::element_markdown(),
                      legend.title = element_text(size = 20),
                      legend.text = element_text(size = 15),
-                     axis.title.y = element_text(margin = margin(t = 0, r = 0, b = 0, l = 0)),
+                     #axis.title.y = element_text(margin = margin(t = 0, r = 0, b = 0, l = 0)),
                      legend.box = "vertical",
                      legend.spacing.y = unit(0, "pt"),
                      plot.margin = margin(5.5,3,5.5,25, "pt"))  +
@@ -892,7 +891,7 @@ MorphT_CZ <- plot_concept(Trait_categ = 'Morphological',
                                 xvar_raw = 'det_Clim',
                                 yvar_raw = 'Trait_mean',
                                 slope_ES = 'Estimate/Trait_mean<-det_Clim',
-                                expression(paste('Morphology, ', Z[mo])),
+                                ylab = expression(paste('Morphology, ', Z[mo])),
                                 xlab = expression(paste('Temperature, ', C[te])))
 MorphT_ZG <- plot_concept(Trait_categ = 'Morphological',
                                 raw_dat = temp_std,
