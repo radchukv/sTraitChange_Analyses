@@ -51,6 +51,9 @@ dat <- merge(biol_dat, subset(trendsPop, select = c(ID, LM_std_estimate, LM_std_
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 ####                                1. Descriptive stat of the complete dataset                                  ####
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# directly here rename that typo, thhalassarsche melanophrys to be correct
+dat$Species[dat$Species == 'Thalassarche melanophrys'] <- 'Thalassarche melanophris'
+dat <- droplevels(dat)
 data_descript <- droplevels(dat %>%
   group_by(, ID) %>%
   mutate(Nyears = n()) %>%
@@ -78,11 +81,16 @@ data_descr <- data_descript %>%
 
 # summaries
 nrow(data_descr)  ## 213 studies
-length(unique(data_descr$Species))  # 74 species
+length(unique(data_descr$Species))  # 73 species
 table(data_descr$Taxon)
 table(data_descr$Trait_Categ)  ##  97 Phenology and  116 Morphology
 table(data_descr$Demog_rate_Categ)
 table(data_descr$Trait_Categ, data_descr$Taxon)
+length(unique(data_descr$Species[data_descr$Taxon== 'Bird'])) # 53
+length(unique(data_descr$Species[data_descr$Taxon== 'Mammal'])) # 10
+length(unique(data_descr$Species[data_descr$Taxon== 'Reptile'])) # 7
+length(unique(data_descr$Species[data_descr$Taxon== 'Fish'])) # 3
+
 
 # across countries
 tab_country <- table(data_descr$Country)
@@ -374,6 +382,7 @@ traits_proc <- traits %>%
       Migratory.mode_Sibly %in% c('migrant') ~ 'migrant',
       TRUE ~ 'unknown'))
 
+
 dat_traits <- merge(data_descr, subset(traits_proc, select = c(Species, GenLength_y_IUCN, Migrat, Diet_HCO)),
                     by = 'Species', all.x = TRUE)
 dat_suppl <- dat_traits %>%
@@ -383,15 +392,38 @@ dat_suppl <- dat_traits %>%
 
 dat_suppl <- dat_suppl[order(dat_suppl$ID), ]
 
-dat_suppl$Trait <- as.character(dat_suppl$Trait)
-# and replace the names of the "fine" trait categories:
-dat_suppl$Trait[dat_suppl$Trait == 'ArrivalDateFemales'] <- 'FirstArrivalDateFemales'
-dat_suppl$Trait[dat_suppl$Trait == 'ArrivalDateMales'] <- 'FirstArrivalDateMales'
-dat_suppl$Trait[dat_suppl$Study_Authors == 'Oppel_et_al'] <- 'FirstLayDate'
-dat_suppl$Trait[dat_suppl$Trait == 'LayingDate'] <- 'OnsetBreeding'
-dat_suppl$Trait[dat_suppl$Trait == 'NestInitiationDate'] <- 'OnsetBreeding'
-dat_suppl$Trait[dat_suppl$Trait == 'NestDate'] <- 'OnsetBreeding'
+
+# reclassify into a broader trait type that encompassess similar
+# traits (e.g. arrival of females and arrivla of males)
+dat_s_phen_type <- dat_suppl %>%
+  mutate(TraitType = as.factor(case_when(Trait %in% c('ArrivalDateFemales',
+                                                      'ArrivalDateMales',
+                                                      'FemaleArrivalDate',
+                                                      'MaleArrivalDate',
+                                                      'SettlementDateYearOld') ~ 'ArrivalDate',
+                                         Trait %in% c('BreedingDate',
+                                                      'LayingDateAllBroods',
+                                                      'MeanBreedingDate',
+                                                      'LayingDate',
+                                                      'NestInitiationDate',
+                                                      'NestDate') ~ 'OnsetBreeding',
+                                         Trait %in% c('StartOfLaying') ~ 'FirstLayDate',
+                                         Trait %in% c('AntlerCastDate', 'RutEndDate',
+                                                      'OestrusDate', 'RutStartDate') ~
+                                           'RutDate',
+                                         Trait %in% c('BirthDate') ~ 'ParturitionDate',
+                                         .default = as.character(Trait))))
+test <- droplevels(subset(dat_s_phen_type, Trait_Categ == 'Phenological'))
+table(test$TraitType)
+levels(dat_s_phen_type$TraitType)
+
+table(test$TraitType)/sum(table(test$TraitType))
+
+# ArrivalDate   EmergenceDate    FirstLayDate   Fledging_Date
+# 0.06185567      0.02061856      0.07216495      0.01030928
+# HatchingDate   OnsetBreeding ParturitionDate         RutDate
+# 0.01030928      0.74226804      0.04123711      0.04123711
 
 
-save_xlsx(table = dat_suppl, table_name = './tables/SupplementaryData_AllStudies')
-table(dat_suppl$Trait[dat_suppl$Trait_Categ == 'Phenological'])
+save_xlsx(table = dat_s_phen_type, table_name = './tables/SupplementaryData_AllStudies')
+
