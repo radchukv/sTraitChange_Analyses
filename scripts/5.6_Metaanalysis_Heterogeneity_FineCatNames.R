@@ -92,106 +92,117 @@ unique(Coefs_phen$ID[Coefs_phen$Trait == 'ArrivalDateFemales'])   #  421
 unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'ArrivalDateFemales'])   # Schaub_et_al
 unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'ArrivalDateMales'])   # Schaub_et_al
 unique(Coefs_phen$ID[Coefs_phen$Trait == 'ArrivalDateMales'])   #  420
-# after checking the original papers:
-# For 185 & 186 (studies by Moeller on Hirundo rustica): mean arival date of females and Males;
-# for studies by Schaub et al: it is the First arival date for males and females, so I will not merge them.
-# but I will rename the traits from Shcaub et al. as "FirstArrivalDateMale..."
-Coefs_phen$Trait <- as.character(Coefs_phen$Trait)
-Coefs_phen$Trait[Coefs_phen$Trait == 'ArrivalDateFemales'] <- 'FirstArrivalDateFemales'
-Coefs_phen$Trait[Coefs_phen$Trait == 'ArrivalDateMales'] <- 'FirstArrivalDateMales'
-
-
-unique(Coefs_phen$ID[Coefs_phen$Trait == 'NestInitiationDate'])   # 472 471
-unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'NestInitiationDate'])   # Ross_et_al
-Coefs_phen[Coefs_phen$Trait == 'NestInitiationDate', ]  ## bird
-
+# all arrival dates merge under ArrivalDate
 
 unique(Coefs_phen$ID[Coefs_phen$Trait == 'InitiationDate'])   #  430
 unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'InitiationDate'])   # Oppel_et_al
 Coefs_phen[Coefs_phen$Study_Authors == 'Oppel_et_al', ]
 Coefs_phen$Trait[Coefs_phen$Study_Authors == 'Oppel_et_al'] <- 'FirstLayDate'
 
+# reclassify into a broader trait type that encompassess similar
+# traits (e.g. arrival of females and arrivla of males)
+Coefs_phen_type <- Coefs_phen %>%
+  mutate(TraitType = as.factor(case_when(Trait %in% c('ArrivalDateFemales',
+                                            'ArrivalDateMales',
+                                            'FemaleArrivalDate',
+                                            'MaleArrivalDate') ~ 'ArrivalDate',
+                               Trait %in% c('BreedingDate',
+                                            'LayingDateAllBroods',
+                                            'MeanBreedingDate',
+                                            'LayingDate',
+                                            'NestInitiationDate',
+                                            'NestDate') ~ 'OnsetBreeding',
+                               Trait %in% c('StartOfLaying') ~ 'FirstLayDate',
+                               Trait %in% c('AntlerCastDate', 'RutEndDate',
+                                            'OestrusDate') ~
+                                 'RutDate',
+                              .default = as.character(Trait))))
 
+table(Coefs_phen_type$TraitType)
+levels(Coefs_phen_type$TraitType)
+
+#Coefs_phen$TraitType <- as.character(Coefs_phen$Trait)
+
+# check
+#unique(Coefs_phen$ID[Coefs_phen$Trait == 'NestInitiationDate'])   # 472 471
+#unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'NestInitiationDate'])   # Ross_et_al
+#Coefs_phen[Coefs_phen$Trait == 'NestInitiationDate', ]  ## bird
 
 
 # check what is the study with breedingDate
-unique(Coefs_phen$ID[Coefs_phen$Trait == 'BreedingDate'])   #  136
-unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'BreedingDate']) ## Tarwater & Beissinger
+#unique(Coefs_phen$ID[Coefs_phen$Trait == 'BreedingDate'])   #  136
+#unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'BreedingDate']) ## Tarwater & Beissinger
 # I checked and this is the study by Corey Tarwater on Forpus passerinus, so
 # it can be changed to "OnsetBreeding"
-Coefs_phen$Trait[Coefs_phen$Trait == 'BreedingDate'] <- 'OnsetBreeding'
+#Coefs_phen$Trait[Coefs_phen$Trait == 'BreedingDate'] <- 'OnsetBreeding'
 
 
 # check LayingDateAllBroods
-unique(Coefs_phen$ID[Coefs_phen$Trait == 'LayingDateAllBroods'])   #  14
-unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'LayingDateAllBroods'])  # Schroeder_et_al
-## keep as is, because here all broods of the sparrow were included...
+#unique(Coefs_phen$ID[Coefs_phen$Trait == 'LayingDateAllBroods'])   #  14
+#unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'LayingDateAllBroods'])  # Schroeder_et_al
+## all broods of the sparrow were included, can potentially be included under the "Onset breeding"
 
 
 # check MeanBreedingDate
-unique(Coefs_phen$ID[Coefs_phen$Trait == 'MeanBreedingDate'])   #  126
-unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'MeanBreedingDate'])  # Tarwater&Beissinger
+#unique(Coefs_phen$ID[Coefs_phen$Trait == 'MeanBreedingDate'])   #  126
+#unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'MeanBreedingDate'])  # Tarwater&Beissinger
 ## in fact these two studies by Tarwater & Beissinger are simply from different locations;
 ## so renaming also as "OnsetBreeding"
-Coefs_phen$Trait[Coefs_phen$Trait == 'MeanBreedingDate'] <- 'OnsetBreeding'
+#Coefs_phen$Trait[Coefs_phen$Trait == 'MeanBreedingDate'] <- 'OnsetBreeding'
 
-# check OnsetBreeding
-unique(Coefs_phen$ID[Coefs_phen$Trait == 'OnsetBreeding'])   #  443
-unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'OnsetBreeding'])  # Rodel et al
-# it is a rabbit, so makes sense to keep OnsetBreeding
 
-# check FirstLayDate
-unique(Coefs_phen$ID[Coefs_phen$Trait == 'FirstLayDate'])   #   556 559 558 557 560 430
-unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'FirstLayDate'])  # Jenouvrier_et_al Oppel_et_al
+# # check FirstLayDate
+# unique(Coefs_phen$ID[Coefs_phen$Trait == 'FirstLayDate'])   #   556 559 558 557 560 430
+# unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'FirstLayDate'])  # Jenouvrier_et_al Oppel_et_al
 
 # check StartOfLaying
-unique(Coefs_phen$ID[Coefs_phen$Trait == 'StartOfLaying'])   #   486
-unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'StartOfLaying'])  # Kruuk_et_al
+#unique(Coefs_phen$ID[Coefs_phen$Trait == 'StartOfLaying'])   #   486
+#unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'StartOfLaying'])  # Kruuk_et_al
 # study on the superb fairy wren. I checked and So it is basically firstLaydate (mean of
 # first laying dates) CHANGE
-Coefs_phen$Trait[Coefs_phen$Trait == 'StartOfLaying'] <- 'FirstLayDate'
+#Coefs_phen$Trait[Coefs_phen$Trait == 'StartOfLaying'] <- 'FirstLayDate'
 
-# check Oestrus date
-unique(Coefs_phen$ID[Coefs_phen$Trait == 'OestrusDate'])   #   312
-unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'OestrusDate'])  # Moyes et al
+# check Oestrus date - this is only related to rutting, so can be reclassified under
+# that type of traits
+#unique(Coefs_phen$ID[Coefs_phen$Trait == 'OestrusDate'])   #   312
+#unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'OestrusDate'])  # Moyes et al
 
 # check ParturitionDate
-unique(Coefs_phen$ID[Coefs_phen$Trait == 'ParturitionDate'])   #   561 403 402
-unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'ParturitionDate'])  # Renaud_et_al Massot_et_al
+#unique(Coefs_phen$ID[Coefs_phen$Trait == 'ParturitionDate'])   #   561 403 402
+#unique(Coefs_phen$Study_Authors[Coefs_phen$Trait == 'ParturitionDate'])  # Renaud_et_al Massot_et_al
 # for Ovis canadensis and zootoca vivipara
 
 
 # Also replace "LayingDate", "NestDate" and "NestInitiationDate" with "OnsetBreeding"
-Coefs_phen$Trait[Coefs_phen$Trait == 'LayingDate'] <- 'OnsetBreeding'
-Coefs_phen$Trait[Coefs_phen$Trait == 'NestInitiationDate'] <- 'OnsetBreeding'
-Coefs_phen$Trait[Coefs_phen$Trait == 'NestDate'] <- 'OnsetBreeding'
+#Coefs_phen$Trait[Coefs_phen$Trait == 'LayingDate'] <- 'OnsetBreeding'
+#Coefs_phen$Trait[Coefs_phen$Trait == 'NestInitiationDate'] <- 'OnsetBreeding'
+#Coefs_phen$Trait[Coefs_phen$Trait == 'NestDate'] <- 'OnsetBreeding'
 
 # also include "LayingDateAllBroods" under "OnsetBreeding"
-Coefs_phen$Trait[Coefs_phen$Trait == 'LayingDateAllBroods'] <- 'OnsetBreeding'
+#Coefs_phen$Trait[Coefs_phen$Trait == 'LayingDateAllBroods'] <- 'OnsetBreeding'
 
 
 # 3. Heterogeneity in CZ --------------------------------------------
-tre_sub <- drop.tip(vert_tree, which(!vert_tree$tip.label %in% Coefs_phen$Species))
+tre_sub <- drop.tip(vert_tree, which(!vert_tree$tip.label %in% Coefs_phen_type$Species))
 Mat_phylo <- ape::vcv.phylo(tre_sub, corr = TRUE)
 diag(Mat_phylo)
 # check that all species that are on the tree are also in the dataset
-for(i in 1:(nrow(Coefs_phen))){
-  check <- match(Coefs_phen$Species[i], tre_sub$tip.label)
+for(i in 1:(nrow(Coefs_phen_type))){
+  check <- match(Coefs_phen_type$Species[i], tre_sub$tip.label)
   if (is.na(check)){
-    print(paste(Coefs_phen$Species[i], 'is not in the phylogeny', sep = ' '))}
+    print(paste(Coefs_phen_type$Species[i], 'is not in the phylogeny', sep = ' '))}
 }
 
 # other way around
 for(i in 1:(nrow(Mat_phylo))){
-  check <- match(rownames(Mat_phylo)[i], Coefs_phen$Species)
+  check <- match(rownames(Mat_phylo)[i], Coefs_phen_type$Species)
   if (is.na(check)){
     print(paste(rownames(Mat_phylo)[i], 'is not in the dataset', sep = ' '))}
 }
 
-Coefs_phen$Trait <- as.factor(Coefs_phen$Trait)
-meta_Phen_CZ_bySpeTrait <- fit_meta_phylo(data_MA = Coefs_phen,
+meta_Phen_CZ_bySpeTrait <- fit_meta_phylo(data_MA = Coefs_phen_type,
                                   Type_EfS = 'Trait_mean<-det_Clim', COV = 'Pvalue',
-                                  Cov_fact = 'Trait',  DD = 'n_effectGR', simpleSEM = TRUE,
+                                  Cov_fact = 'TraitType',  DD = 'n_effectGR', simpleSEM = TRUE,
                                   A = Mat_phylo,
                                   Trait = FALSE, des.matrix = 'identity')
 meta_Phen_CZ_bySpeTrait$data
