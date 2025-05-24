@@ -28,6 +28,24 @@ traits <- read.csv('./data/speciesTraits.csv')
 traits_sub <- subset(traits, select = c(Species, GenLength_y_IUCN))
 Coefs_Aut_sp <- merge(Coefs_Aut, traits_sub, by = 'Species', all.x = TRUE)
 
+Coefs_Aut_sp %<>%
+  mutate(TraitType = as.factor(case_when(Trait %in% c('ArrivalDateFemales',
+                                                      'ArrivalDateMales',
+                                                      'FemaleArrivalDate',
+                                                      'MaleArrivalDate') ~ 'ArrivalDate',
+                                         Trait %in% c('BreedingDate',
+                                                      'LayingDateAllBroods',
+                                                      'MeanBreedingDate',
+                                                      'LayingDate',
+                                                      'NestInitiationDate',
+                                                      'NestDate') ~ 'OnsetBreeding',
+                                         Trait %in% c('StartOfLaying') ~ 'FirstLayDate',
+                                         Trait %in% c('AntlerCastDate', 'RutEndDate',
+                                                      'OestrusDate') ~
+                                           'RutDate',
+                                         .default = as.character(Trait))))
+
+table(Coefs_Aut_sp$TraitType)
 
 # 1. Prepare data for birds -----------------------------------------------
 

@@ -21,7 +21,6 @@ Coefs_Aut$Climate <- 'Temperature'
 Coefs <- rbind(Coefs_Aut, Coefs_Aut_prec)
 
 
-
 ## data on traits
 traits <- read.csv('./data/speciesTraits.csv')
 

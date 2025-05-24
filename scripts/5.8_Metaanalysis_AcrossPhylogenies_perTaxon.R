@@ -18,6 +18,27 @@ length(unique(Coefs_Aut$ID))  ## 202 (from initial 210)
 traits <- read.csv('./data/speciesTraits.csv')
 traits_sub <- subset(traits, select = c(Species, GenLength_y_IUCN))
 Coefs_Aut_sp <- merge(Coefs_Aut, traits_sub, by = 'Species', all.x = TRUE)
+
+
+Coefs_Aut_sp %<>%
+  mutate(TraitType = as.factor(case_when(Trait %in% c('ArrivalDateFemales',
+                                                      'ArrivalDateMales',
+                                                      'FemaleArrivalDate',
+                                                      'MaleArrivalDate') ~ 'ArrivalDate',
+                                         Trait %in% c('BreedingDate',
+                                                      'LayingDateAllBroods',
+                                                      'MeanBreedingDate',
+                                                      'LayingDate',
+                                                      'NestInitiationDate',
+                                                      'NestDate') ~ 'OnsetBreeding',
+                                         Trait %in% c('StartOfLaying') ~ 'FirstLayDate',
+                                         Trait %in% c('AntlerCastDate', 'RutEndDate',
+                                                      'OestrusDate') ~
+                                           'RutDate',
+                                         .default = as.character(Trait))))
+
+table(Coefs_Aut_sp$TraitType)
+
 Coefs_Aut_sp$WeathQ[Coefs_Aut_sp$WeathQ == ''] <-  "2"
 Coefs_Aut_sp %<>% mutate(across(where(is_character), as_factor))
 
@@ -36,6 +57,24 @@ length(unique(Coefs_Aut_precip$ID))  ## 207 (from initial 210)
 unique(Coefs_Aut_precip$WeathQ)
 
 Coefs_Aut_precip <- merge(Coefs_Aut_precip, traits_sub, by = 'Species', all.x = TRUE)
+Coefs_Aut_precip %<>%
+  mutate(TraitType = as.factor(case_when(Trait %in% c('ArrivalDateFemales',
+                                                      'ArrivalDateMales',
+                                                      'FemaleArrivalDate',
+                                                      'MaleArrivalDate') ~ 'ArrivalDate',
+                                         Trait %in% c('BreedingDate',
+                                                      'LayingDateAllBroods',
+                                                      'MeanBreedingDate',
+                                                      'LayingDate',
+                                                      'NestInitiationDate',
+                                                      'NestDate') ~ 'OnsetBreeding',
+                                         Trait %in% c('StartOfLaying') ~ 'FirstLayDate',
+                                         Trait %in% c('AntlerCastDate', 'RutEndDate',
+                                                      'OestrusDate') ~
+                                           'RutDate',
+                                         .default = as.character(Trait))))
+
+table(Coefs_Aut_precip$TraitType)
 Coefs_Aut_precip %<>% mutate(across(where(is_character), as_factor))
 
 Coefs_Aut_precip_Bird <- Coefs_Aut_precip %>%
