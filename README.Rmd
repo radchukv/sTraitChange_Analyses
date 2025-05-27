@@ -19,7 +19,7 @@ library(sTraitChange)
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of sTraitChange_Analyses project is to provide the full workflow as well as the data needed to reproduce the analyses for the manuscript 'Changes in phenology mediate vertebrate population responses to climate globally' by Radchuk et al. (submitted). The analyses in this repository rely heavily on the functions available from [sTraitChange](https://github.com/radchukv/sTraitChange) package. 
+The goal of sTraitChange_Analyses project is to provide the full workflow as well as the data needed to reproduce the analyses for the manuscript 'Changes in phenology mediate vertebrate population responses to temperature globally' by Radchuk et al. (submitted). The analyses in this repository rely heavily on the functions available from [sTraitChange](https://github.com/radchukv/sTraitChange) package. 
 
 ## System requirements
 
@@ -38,7 +38,7 @@ This R project was tested on:
 In order to run the analyses, the following R packages must be installed: 
 ``` r
 install.packages(c('climwin', 'sTraitChange', 'metafor', 'patchwork', 'spaMM', 'ape',
-'RRphylo', 'rtrees', 'geiger', 'corrplot', 'ggtext'))
+'RRphylo', 'rtrees', 'geiger', 'corrplot', 'ggtext', 'grafify', 'magrittr', 'tidyverse'))
 ```
 
 The following versions of these packages were used when the R project `sTraitChange_Analyses` was tested:
@@ -54,6 +54,9 @@ The following versions of these packages were used when the R project `sTraitCha
 "spaMM 4.5.0"
 "sTraitChange 0.0.0.900"
 "tidyverse 2.0.0"
+"grafify 5.0.0.1"
+"magrittr 2.0.3"
+"RRphylo 2.8.1"
 ```
 
 ## Structure
@@ -72,8 +75,7 @@ This project contains the following folders:
 
 ## Instructions for use
 
-The scripts are numbered in the logical order in which they are used in the analyses. The scripts  pertaining to sliding window analyses will not run out of the box because relevant climate datasets could not be shared in the repo (due to its prohibitively big size). In order to run those scripts
-the user will have to download the climate data from the respective sources mentioned in Supplementary materials (Table S6) and place them in the respective directory on the path (./data).  
+The scripts are numbered in the logical order in which they are used in the analyses. The scripts  pertaining to sliding window analyses will not run out of the box because relevant climate datasets could not be shared in the repo (due to its prohibitively big size). In order to run those scripts, the user will have to download the climate data from the respective sources mentioned in Supplementary materials (Table S7) and place them in the respective directory on the path (./data).  
 
 Brief description of what each script does:   
 - **1.1_DataPrep_Clim.R**: prepares climate data for sliding window analyses using `climwin` package (will not run directly, see above!).  
@@ -90,7 +92,9 @@ Brief description of what each script does:
 - **5.3.1_Metaanalysis_Temp_noDD.R** & **5.3.2_Metaanalysis_Precip_noDD.R**: meta-analyses focusing, respectively, on temperature and precipitation as climate variables and performed without the population size included in SEM (sensitivity analyses);    
 - **5.4_Metaanalysis_AcrossPhylogenies.R**: a script running meta-analyses across 100 posterior phylogenies;    
 - **5.5_Metaanalysis_HeterogeneityPaths.R**: a script explaining the heterogeneity in the SEM paths with hypothesized predictors;   
-- **5.6_Metaanalysis_Heterogeneity_FineCatNames.R**: assessing the impact of the fine trait category on heterogeneity in the phenotypic responses to climate;    
+- **5.6_Metaanalysis_Heterogeneity_FineCatNames.R**: assessing the impact of the fine trait category on heterogeneity in the phenotypic responses to climate;   
+- **5.7_Metaanalysis_Temp_perTaxon.R**: meta-analyses focusing on effects of temperature on phenological traits, separate per taxon;   
+- **5.8_Metaanalysis_AcrossPhylogenies_perTaxon.R**: running meta-analyses per taxon across 100 posterior phylogenies;   
 - **6_pDeltaAIC.R**: exploration of the potential impact that pDeltaAIC has on the results;   
 - **7_Figures_MS.R**: Figures used in the manuscript.    
 
