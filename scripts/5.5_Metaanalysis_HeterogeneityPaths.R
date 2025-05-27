@@ -625,7 +625,7 @@ tab_spSpecific_uni(mod_mv = mod_CG_PhenT_Diet,
 # 5.  Overall Plots -------------------------------------------------------
 
 # Figure with two panels onlY: effect of latitude and generation time
-pdf('./plots_ms/FigS3_3Panels_GenT_Diet&AbsLat_SD.pdf',
+pdf('./plots_ms/FigS6_3Panels_GenT_Diet&AbsLat_SD.pdf',
     width = 12, height = 5)
 plot_CZ_PhenT_AbsLat[[2]]  + plot_CZ_PhenT_Gen[[2]] +
   plot_CZ_PhenT_Diet +
