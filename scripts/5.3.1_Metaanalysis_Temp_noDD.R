@@ -157,6 +157,7 @@ meta_Phen_Cov <- fit_all_meta(data_MA = Coefs_Aut_sp,
                               simpleSEM = TRUE,
                               A = Mat_phen_climtr,
                               all_Relations = c('Trait_mean<-det_Clim',
+                                                'GR<-det_Clim',
                                                 'Ind_GR<-det_Clim',
                                                 'Tot_GR<-det_Clim'))
 meta_Phen <- fit_all_meta(data_MA = Coefs_Aut_sp,
@@ -171,8 +172,7 @@ meta_Phen <- fit_all_meta(data_MA = Coefs_Aut_sp,
                           colr = c('black'),
                           DD = 'none',
                           simpleSEM = TRUE,
-                          all_Relations = c('GR<-det_Clim',
-                                            'GR<-Trait_mean'))
+                          all_Relations = c('GR<-Trait_mean'))
 
 
 # II. Morphology -------------------------------------------
@@ -200,6 +200,7 @@ meta_Morph_Cov <- fit_all_meta(data_MA = Coefs_Aut_sp,
                                DD = 'none',
                                simpleSEM = TRUE,
                                all_Relations = c('Trait_mean<-det_Clim',
+                                                 'GR<-det_Clim',
                                                  'Ind_GR<-det_Clim',
                                                  'Tot_GR<-det_Clim'))
 
@@ -216,8 +217,7 @@ meta_Morph <- fit_all_meta(data_MA = Coefs_Aut_sp,
                            colr = c('black'),
                            DD = 'none',
                            simpleSEM = TRUE,
-                           all_Relations = c('GR<-det_Clim',
-                                             'GR<-Trait_mean'))
+                           all_Relations = c('GR<-Trait_mean'))
 
 
 # III. Summary across groups      -----------------------------------------

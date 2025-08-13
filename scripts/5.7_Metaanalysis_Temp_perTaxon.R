@@ -138,6 +138,7 @@ meta_Phen_Cov <- fit_all_meta(data_MA = Coefs_Aut_Bird,
                                simpleSEM = TRUE,
                                A = Mat_phen_climtr,
                                all_Relations = c('Trait_mean<-det_Clim',
+                                                 'GR<-det_Clim',
                                                  'Ind_GR<-det_Clim',
                                                  'Tot_GR<-det_Clim'))
 
@@ -154,7 +155,7 @@ meta_Phen <- fit_all_meta(data_MA = Coefs_Aut_Bird,
                           colr = c('black'),
                           DD = 'n_effectGR',
                           simpleSEM = TRUE,
-                          all_Relations = c('GR<-det_Clim', 'GR<-Pop_mean',
+                          all_Relations = c('GR<-Pop_mean',
                                             'GR<-Trait_mean'))
 
 
@@ -282,6 +283,7 @@ meta_Phen_Cov_Mam <- fit_all_meta(data_MA = Coefs_Aut_Mam,
                               simpleSEM = TRUE,
                               A = Mat_phen_climtr_mam,
                               all_Relations = c('Trait_mean<-det_Clim',
+                                                'GR<-det_Clim',
                                                 'Ind_GR<-det_Clim',
                                                 'Tot_GR<-det_Clim'))
 
@@ -298,7 +300,7 @@ meta_Phen_mam <- fit_all_meta(data_MA = Coefs_Aut_Mam,
                           colr = c('black'),
                           DD = 'n_effectGR',
                           simpleSEM = TRUE,
-                          all_Relations = c('GR<-det_Clim', 'GR<-Pop_mean',
+                          all_Relations = c('GR<-Pop_mean',
                                             'GR<-Trait_mean'))
 
 
@@ -423,7 +425,7 @@ two <- dplyr::bind_rows(lapply(list('Ind_GR<-det_Clim', 'Tot_GR<-det_Clim'),
                                function(x){extr_coefs(obj = meta_Phen_Cov, Type_EfS = x)}))
 
 ## cycling through all the subsets and all estimated path coefficients to get them all into one dataset
-efSizes_estim <- dplyr::bind_rows(lapply(list(meta_Phen_Cov, meta_Morph_Cov), function(x){
+efSizes_estim <- dplyr::bind_rows(lapply(list(meta_Phen_Cov, meta_Phen_Cov_Mam), function(x){
   lapply(list('Ind_GR<-det_Clim', 'Tot_GR<-det_Clim'),
          function(y){extr_coefs(obj = x, Type_EfS = y)})
 }))
@@ -449,6 +451,6 @@ efSizes_estim <- efSizes_estim %>%
 Coef_all_T <- rbind(Coefs_Aut_subst, efSizes_estim)
 
 # save all the effect sizes
-saveRDS(object = Coef_all_T, file = './output_all/PathCoefs_Temp_AlsoEstimatedRelations.RDS')
+saveRDS(object = Coef_all_T, file = './output_all/PathCoefs_Temp_Phen_PerTaxon_AlsoEstimatedRelations.RDS')
 #check <- readRDS('./output_all/PathCoefs_Temp_AlsoEstimatedRelations.RDS')
 

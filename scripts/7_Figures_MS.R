@@ -13,7 +13,7 @@ library(grafify) # for colour-blind -friendly colour scheme
 # 1. Figure for SEMs, with temp and precip  --------
 
 ## read in the effect sizes on temperature
-ef_T <- readRDS(file = './output_all/all_efSizes_temperature.RDS')
+ef_T <- readRDS(file = './output_all/all_efSizes_temperature_cor.RDS')
 ef_T$Climatic_var <- 'Temperature'
 
 ## effect sizes precipitation
@@ -235,7 +235,7 @@ cor.test(x = phen_cz_zg_temp$Estimate.x, phen_cz_zg_temp$Estimate.y)
 # morphology and temp:
 morph_cz_zg_temp <- subset(cz_zg_temp, Trait_Categ.x == 'Morphology')
 cor.test(x = morph_cz_zg_temp$Estimate.x, morph_cz_zg_temp$Estimate.y)
-# non-signif: r = 0.04719467, p = 0.626, df = 107
+# non-signif: r = 0.08346084, p = 0.395, df = 104
 
 # look at phenology relation with precipitation
 cz_zg_prec <- merge(cz_ef_prec, zg_ef_prec, by = 'ID')
@@ -392,6 +392,7 @@ ef_all_noP <- ef_all_noP %>%
                   COL == "Intercept non-significant, Precipitation" ~ 'Non-signif, precipitation'),
                 REL_Clim = paste(REL, Climatic_var, sep = '_'))
 ef_all_noP$REL_Clim <- factor(ef_all_noP$REL_Clim, levels = c("CZ_Temperature", "CZ_Precipitation",
+                                                              "CG_Temperature", "CG_Precipitation",
                                                                 "CZG_Temperature", "CZG_Precipitation",
                                                                 "TotalCG_Temperature", "TotalCG_Precipitation"))
 
@@ -399,20 +400,20 @@ ef_all_noP$REL_Clim <- factor(ef_all_noP$REL_Clim, levels = c("CZ_Temperature", 
 ef_all_subP <- droplevels(subset(ef_all, REL %in% unique(ef_all_noP$REL)))
 
 ## labels
-labs_df <- data.frame(x = rep(-2.3, 3), y = c(1.5, 3.5, 5.5),
-                      Trait_Categ = rep(c('Morphology'),  3),
+labs_df <- data.frame(x = rep(-2.3, 4), y = c(1.5, 3.5, 5.5, 7.5),
+                      Trait_Categ = rep(c('Morphology'),  4),
                       label =  as.character(levels(ef_all_subP$REL)))
 tab_T$x <- rep(1.2, 2)
-tab_T$y <- rep(6, 2)
+tab_T$y <- rep(7.5, 2)
 tab_P$x <- rep(1.2, 2)
-tab_P$y <- rep(5.5, 2)
+tab_P$y <- rep(6.5, 2)
 
 axisLab <- data.frame(x = c(-3.3), y = 3, label = 'Relation',
                       Trait_Categ = c('Morphology'))
 tab_T$Trait_Categ <- as.factor(tab_T$Trait_Categ)
 label_facet <- data.frame(lab = c('a', 'b'),
                           Trait_Categ = levels(tab_T$Trait_Categ),
-                          x = rep(-1.8, 2), y = rep(6, 2))
+                          x = rep(-1.8, 2), y = rep(7.5, 2))
 
 ## merge ef_all with and without DD
 
@@ -420,8 +421,8 @@ ef_all_noP$PdeltaAICc <- 'No'
 ef_all_subP$PdeltaAICc <- 'Yes'
 ef_all_subP$DD <- NULL
 
-ef_all_subP$yAx <- rep(1:6, 2)
-ef_all_noP$yAx <- rep(1:6, 2)
+ef_all_subP$yAx <- rep(1:8, 2)
+ef_all_noP$yAx <- rep(1:8, 2)
 
 ef_all_P <- rbind(ef_all_noP, ef_all_subP)
 
@@ -785,15 +786,6 @@ PhenT_CZ + PhenT_ZG + PhenT_CG + PhenT_CZvsZG_CZGNonneg +
 dev.off()
 
 
-pdf('./plots_ms/FigS4_ConvOrder_ColourTaxon.pdf', height = 10, width = 10)
-PhenT_CZ + PhenT_ZG + PhenT_CG + PhenT_CZvsZG_CZGNonneg +
-  plot_layout(guides = 'collect') +
-  plot_annotation(tag_levels = "a") & theme(plot.tag = element_text(face = 'bold', size = 20),
-                                            plot.tag.position  = c(-0.03, .98),
-                                            legend.position = 'bottom',
-                                            legend.box = 'vertical')
-dev.off()
-
 
 ## plotting the density plots for CZG and CG
 CZG_dens <- ggplot(subset(wide_tempES_all, Trait_Categ ==
@@ -830,31 +822,31 @@ pdf('./output_all/Fig_CZG&CG_Pan_Densities.pdf', height = 12, width = 7)
 CZG_dens + CG_dens +
   plot_layout(nrow = 2)
 dev.off()
-
-
-layout_man <- "
-AB
-#D
-CD
-E#
-"
-
-# this part of the script will have to be deleted if this is not
+#
+#
+# layout_man <- "
+# AB
+# #D
+# CD
+# E#
+# "
+#
+# # this part of the script will have to be deleted if this is not
 # the format of the figure that is included in the MS
-pdf('./output_all/Fig_4panels_Concept_PhenT_ColouredByCZGSign.pdf',
-    height = 13, width = 13)
-PhenT_CZ +
-  PhenT_ZG +
-  PhenT_CZvsZG_CZGNonneg +
-  PhenT_CZGvsCG+
-  guide_area() +
-  plot_annotation(tag_levels = 'a') +
-  plot_layout(design = layout_man,
-              widths = c(4,4), heights = c(4, 0.1, 4, 0.2),
-              guides = 'collect'
-              ) &
-  theme(plot.tag = element_text(face = 'bold', size = 20))
-dev.off()
+# pdf('./output_all/Fig_4panels_Concept_PhenT_ColouredByCZGSign.pdf',
+#     height = 13, width = 13)
+# PhenT_CZ +
+#   PhenT_ZG +
+#   PhenT_CZvsZG_CZGNonneg +
+#   PhenT_CZGvsCG+
+#   guide_area() +
+#   plot_annotation(tag_levels = 'a') +
+#   plot_layout(design = layout_man,
+#               widths = c(4,4), heights = c(4, 0.1, 4, 0.2),
+#               guides = 'collect'
+#               ) &
+#   theme(plot.tag = element_text(face = 'bold', size = 20))
+# dev.off()
 
 
 # binomial test to assess whehter the proportion of non-negative is
@@ -864,9 +856,9 @@ binom.test(x = table(ES_datPhenT_CZG$CZG_magn)['Non-negative'],
            n = table(ES_datPhenT_CZG$CZG_magn)['Non-negative'] + table(ES_datPhenT_CZG$CZG_magn)['Negative'],
            p = 0.5,
            alternative = 'greater')
-#  number of successes = 56, number of trials = 93, p-value = 0.03069
-# 95 percent confidence interval: 0.511718 1.00
-# probability of success: 0.6021505
+#  number of successes = 55, number of trials = 93, p-value = 0.04828
+# 95 percent confidence interval: 0.5008753 1.00
+# probability of success: 0.5913978
 
 # 4.2. Temp + Morph -------------------------------------------------------
 
@@ -991,9 +983,9 @@ binom.test(x = table(ES_datMorphT_CZG$CZG_magn)['Non-negative'],
            n = table(ES_datMorphT_CZG$CZG_magn)['Non-negative'] + table(ES_datMorphT_CZG$CZG_magn)['Negative'],
            p = 0.5,
            alternative = 'greater')
-#  number of successes = 53, number of trials = 109, p-value = 0.6491
-# 95 percent confidence interval: 0.4039488 1.00
-# probability of success: 0.4862385
+#  number of successes = 51, number of trials = 106, p-value = 0.6863
+# 95 percent confidence interval: 0.3977832 1.00
+# probability of success: 0.4811321
 
 
 # 4.3. Precip + Phen ------------------------------------------------------
@@ -1121,9 +1113,9 @@ binom.test(x = table(ES_datPhenP_CZG$CZG_magn)['Non-negative'],
            n = table(ES_datPhenP_CZG$CZG_magn)['Non-negative'] + table(ES_datPhenP_CZG$CZG_magn)['Negative'],
            p = 0.5,
            alternative = 'greater')
-#  number of successes = 41, number of trials = 95, p-value = 0.9247
-# 95 percent confidence interval: 0.3452896 1.00
-# probability of success: 0.4315789
+#  number of successes = 41, number of trials = 95, p-value = 0.9679
+# 95 percent confidence interval: 0.3252989 1.00
+# probability of success: 0.4105263
 
 
 # 4.4. Precip  + Morph ----------------------------------------------------
@@ -1138,8 +1130,6 @@ MorphP_CZ <- plot_concept(Trait_categ = 'Morphological',
                                  ylab = "Morphology, Z<sub>mo</sub>",
                                  xlab = "Precipitation, C<sub>pr</sub>")
 
-"Phenology, Z<sub>ph</sub>",
-xlab = "Precipitation, C<sub>pr</sub>")
 MorphP_ZG <- plot_concept(Trait_categ = 'Morphological',
                                  raw_dat = precip_std,
                                  GlobES_dat = globES_P,
@@ -1149,7 +1139,7 @@ MorphP_ZG <- plot_concept(Trait_categ = 'Morphological',
                                  yvar_raw = 'GR',
                                  slope_ES = 'Estimate/GR<-Trait_mean',
                                  ylab = 'Population growth rate, G',
-                                 xlab = "Morphology, Z<sub>mo</sub> ' | Precipitation, C<sub>pr</sub>")
+                                 xlab = "Morphology, Z<sub>mo</sub> | Precipitation, C<sub>pr</sub>")
 MorphP_CG <- plot_concept(Trait_categ = 'Morphological',
                                  raw_dat = precip_std,
                                  GlobES_dat = globES_P,
@@ -1260,15 +1250,14 @@ binom.test(x = table(ES_datMorphP_CZG$CZG_magn)['Non-negative'],
 # 5. Forest plots for SI --------------------------------------
 
 # 5.1. For temperature
-ef_T$yAx <- rep(c(1:12), 2)
-labs_df <- data.frame(x = rep(-2.3, 6), y = c(2, 4, 5, 6, 8, 11),
+ef_T$yAx <- rep(c(1:14), 2)
+labs_df <- data.frame(x = rep(-2.3, 6), y = c(2, 4, 6, 8, 10, 13),
                       Trait_Categ = rep(c('Morphology'),  2),
                       label =  as.character(levels(ef_all$REL)))
 
-
 # modifying tab_T somewhat to produce the plot with intercept only
 tab_T$x <- rep(1, 2)
-tab_T$y <- rep(12, 2)
+tab_T$y <- rep(14, 2)
 tab_T <- tab_T[order(tab_T$Trait_Categ), ]
 tab_T$Lab <- letters[1:2]
 
@@ -1308,16 +1297,16 @@ dev.off()
 
 
 ## 5.2. for Precipitation
-ef_P$yAx <- rep(c(1:12), 2)
+ef_P$yAx <- rep(c(1:14), 2)
 
-labs_df <- data.frame(x = rep(-2.3, 6), y = c(2, 4, 5, 6, 8, 11),
+labs_df <- data.frame(x = rep(-2.3, 6), y = c(2, 4, 6, 8, 10, 13),
                       Trait_Categ = rep(c('Morphology'),  2),
                       label =  as.character(levels(ef_all$REL)))
 
 # modifying the x and y coordinates in the summary table on precip such as to
 # show the number of studies in this plot
 tab_P$x <- rep(1, 2)
-tab_P$y <- rep(12, 2)
+tab_P$y <- rep(14, 2)
 tab_P$Trait_Categ <- as.factor(tab_P$Trait_Categ)
 tab_P <- tab_P[order(tab_P$Trait_Categ), ]
 tab_P$Lab <- letters[1:2]
@@ -1362,8 +1351,8 @@ dev.off()
 ## read in the effect sizes per taxon
 ef_Tax <- readRDS(file = './output_all/all_efSizes_temperature_Phen_ByTaxon.RDS')
 ef_Tax <- ef_Tax[order(ef_Tax$Taxon, ef_Tax$REL), ]
-ef_Tax$yAx <- rep(c(1:12), 2)
-labs_df <- data.frame(x = rep(-2.3, 6), y = c(2, 4, 5, 6, 8, 11),
+ef_Tax$yAx <- rep(c(1:14), 2)
+labs_df <- data.frame(x = rep(-2.3, 6), y = c(2, 4, 6, 8, 10, 13),
                       Taxon = rep(c('Bird'),  2),
                       label =  as.character(levels(ef_Tax$REL)))
 
@@ -1385,7 +1374,7 @@ tab_tax <- tab_tax[1:2, ]
 tab_tax$Taxon <- as.character(tab_tax$Taxon)
 
 tab_tax$x <- rep(1, 2)
-tab_tax$y <- rep(12, 2)
+tab_tax$y <- rep(14, 2)
 tab_tax <- tab_tax[order(tab_tax$Taxon), ]
 tab_tax$Lab <- letters[1:2]
 

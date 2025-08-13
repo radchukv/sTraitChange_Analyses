@@ -154,6 +154,7 @@ meta_Phen_Cov <- fit_all_meta(data_MA = Coefs_Aut_sp,
                                simpleSEM = TRUE,
                                A = Mat_phen_climtr,
                                all_Relations = c('Trait_mean<-det_Clim',
+                                                 'GR<-det_Clim',
                                                  'Ind_GR<-det_Clim',
                                                  'Tot_GR<-det_Clim'))
 
@@ -171,6 +172,7 @@ meta_Phen_noP <- fit_all_meta(data_MA = Coefs_Aut_sp,
                               DD = 'n_effectGR',
                               simpleSEM = TRUE,
                               all_Relations = c('Trait_mean<-det_Clim',
+                                                'GR<-det_Clim',
                                                 'Ind_GR<-det_Clim',
                                                 'Tot_GR<-det_Clim'))
 
@@ -187,7 +189,7 @@ meta_Phen <- fit_all_meta(data_MA = Coefs_Aut_sp,
                           colr = c('black'),
                           DD = 'n_effectGR',
                           simpleSEM = TRUE,
-                          all_Relations = c('GR<-det_Clim', 'GR<-Pop_mean',
+                          all_Relations = c('GR<-Pop_mean',
                                             'GR<-Trait_mean'))
 
 
@@ -264,6 +266,7 @@ meta_Morph_Cov <- fit_all_meta(data_MA = Coefs_Aut_sp,
                               DD = 'n_effectGR',
                               simpleSEM = TRUE,
                               all_Relations = c('Trait_mean<-det_Clim',
+                                                'GR<-det_Clim',
                                                 'Ind_GR<-det_Clim',
                                                 'Tot_GR<-det_Clim'))
 
@@ -280,6 +283,7 @@ meta_Morph_noP <- fit_all_meta(data_MA = Coefs_Aut_sp,
                                DD = 'n_effectGR',
                                simpleSEM = TRUE,
                                all_Relations = c('Trait_mean<-det_Clim',
+                                                 'GR<-det_Clim',
                                                  'Ind_GR<-det_Clim',
                                                  'Tot_GR<-det_Clim'))
 
@@ -295,7 +299,7 @@ meta_Morph <- fit_all_meta(data_MA = Coefs_Aut_sp,
                           colr = c('black'),
                           DD = 'n_effectGR',
                           simpleSEM = TRUE,
-                          all_Relations = c('GR<-det_Clim', 'GR<-Pop_mean',
+                          all_Relations = c('GR<-Pop_mean',
                                             'GR<-Trait_mean'))
 
 hist(Coefs_Aut_sp$GenLength_y_IUCN)
@@ -364,7 +368,7 @@ ord <- order(ef_all$Trait_Categ, ef_all$REL)
 ef_all <- ef_all[ord, ]
 
 ## save ef_all
-saveRDS(object = ef_all, file = './output_all/all_efSizes_temperature.RDS')
+saveRDS(object = ef_all, file = './output_all/all_efSizes_temperature_cor.RDS')
 # ef_all <- readRDS(file = './output_all/all_efSizes_temperature.RDS')
 
 # IV. Extract heterogeneity metrics -------------------------------------------
@@ -441,11 +445,12 @@ ef_all_noP %<>%
                                            Levels_Covar == 'WeathQ2' & pval_Covar >= 0.05 ~ 'Weather quality non-significant'),
                 REL = dplyr::case_when(Relation == 'Trait_mean<-det_Clim' ~ 'CZ',
                                        Relation == 'Ind_GR<-det_Clim' ~ 'CZG',
-                                       Relation == 'Tot_GR<-det_Clim' ~ 'TotalCG'))
+                                       Relation == 'Tot_GR<-det_Clim' ~ 'TotalCG',
+                                       Relation == 'GR<-det_Clim' ~ 'CG'))
 
 
 ## sort the factor so as to have the coefficients from bottom to the top of the scheme
-ef_all_noP$REL <- factor(ef_all_noP$REL, levels = c('CZ', 'CZG', 'TotalCG'))
+ef_all_noP$REL <- factor(ef_all_noP$REL, levels = c('CZ', 'CG', 'CZG', 'TotalCG'))
 
 ## sort the data frme to have the levels in the desired order
 ord_noP <- order(ef_all_noP$Trait_Categ, ef_all_noP$REL)

@@ -164,6 +164,7 @@ meta_Phen_Cov <- fit_all_meta(data_MA = Coefs_Aut_sp,
                               DD = 'n_effectGR',
                               simpleSEM = TRUE,
                               all_Relations = c('Trait_mean<-det_Clim',
+                                                'GR<-det_Clim',
                                                 'Ind_GR<-det_Clim',
                                                 'Tot_GR<-det_Clim'))
 ## for sensitivity analysis without p value
@@ -180,6 +181,7 @@ meta_Phen_noP <- fit_all_meta(data_MA = Coefs_Aut_sp,
                               DD = 'n_effectGR',
                               simpleSEM = TRUE,
                               all_Relations = c('Trait_mean<-det_Clim',
+                                                'GR<-det_Clim',
                                                 'Ind_GR<-det_Clim',
                                                 'Tot_GR<-det_Clim'))
 
@@ -195,7 +197,7 @@ meta_Phen <- fit_all_meta(data_MA = Coefs_Aut_sp,
                           colr = c('black'),
                           DD = 'n_effectGR',
                           simpleSEM = TRUE,
-                          all_Relations = c('GR<-det_Clim', 'GR<-Pop_mean',
+                          all_Relations = c('GR<-Pop_mean',
                                             'GR<-Trait_mean'))
 
 table(meta_Phen$data_meta[[1]]$data_EfS[[1]]$BirdType)
@@ -254,6 +256,7 @@ meta_Morph_Cov <- fit_all_meta(data_MA = Coefs_Aut_sp,
                                DD = 'n_effectGR',
                                simpleSEM = TRUE,
                                all_Relations = c('Trait_mean<-det_Clim',
+                                                 'GR<-det_Clim',
                                                  'Ind_GR<-det_Clim',
                                                  'Tot_GR<-det_Clim'))
 ## for sensitivity analysis
@@ -270,6 +273,7 @@ meta_Morph_noP <- fit_all_meta(data_MA = Coefs_Aut_sp,
                                DD = 'n_effectGR',
                                simpleSEM = TRUE,
                                all_Relations = c('Trait_mean<-det_Clim',
+                                                 'GR<-det_Clim',
                                                  'Ind_GR<-det_Clim',
                                                  'Tot_GR<-det_Clim'))
 
@@ -286,7 +290,7 @@ meta_Morph <- fit_all_meta(data_MA = Coefs_Aut_sp,
                            colr = c('black'),
                            DD = 'n_effectGR',
                            simpleSEM = TRUE,
-                           all_Relations = c('GR<-det_Clim', 'GR<-Pop_mean',
+                           all_Relations = c('GR<-Pop_mean',
                                              'GR<-Trait_mean'))
 
 hist(Coefs_Aut_sp$GenLength_y_IUCN)
@@ -471,11 +475,12 @@ ef_all_noP %<>%
                                            Levels_Covar == 'WeathQ2' & pval_Covar >= 0.05 ~ 'Weather quality non-significant'),
                 REL = dplyr::case_when(Relation == 'Trait_mean<-det_Clim' ~ 'CZ',
                                        Relation == 'Ind_GR<-det_Clim' ~ 'CZG',
-                                       Relation == 'Tot_GR<-det_Clim' ~ 'TotalCG'))
+                                       Relation == 'Tot_GR<-det_Clim' ~ 'TotalCG',
+                                       Relation == 'GR<-det_Clim' ~ 'CG'))
 
 
 ## sort the factor so as to have the coefficients from bottom to the top of the scheme
-ef_all_noP$REL <- factor(ef_all_noP$REL, levels = c('CZ',  'CZG', 'TotalCG'))
+ef_all_noP$REL <- factor(ef_all_noP$REL, levels = c('CZ', 'CG', 'CZG', 'TotalCG'))
 
 ## sort the data frme to have the levels in the desired order
 ord_noP <- order(ef_all_noP$Trait_Categ, ef_all_noP$REL)
