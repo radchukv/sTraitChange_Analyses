@@ -100,7 +100,7 @@ ef_all <- rbind(test_phenT, test_morphT, test_phenP, test_morphP)
 ## output_all (see below)
 start.time <- Sys.time()
 print(start.time)
-for(i in 2:108){
+for(i in 2:102){
 
   print(i)
   phenT <- fit_all_acountphylo(data_MA = Coefs_Aut_sp, vtree = "./data/phylogenies_100",
@@ -125,13 +125,13 @@ print(end.time)
 saveRDS(ef_all, file = "./output_all/ef_all_difPhylo1.rds")
 
 # read the file in
-ef_1 <- readRDS("./output_all/ef_all_difPhylo.rds")
-ef_2 <- readRDS("./output_all/ef_all_difPhylo1.rds")
-ef_2 %<>%
-  filter(phylo != 2)
-
-ef_all <- rbind(ef_1, ef_2)
-length(unique(ef_all$phylo)) # 108 replicates
+# ef_all <- readRDS("./output_all/ef_all_difPhylo1.rds")
+# ef_2 <- readRDS("./output_all/ef_all_difPhylo1.rds")
+# ef_2 %<>%
+#   filter(phylo != 2)
+#
+# ef_all <- rbind(ef_1, ef_2)
+# length(unique(ef_all$phylo)) # 108 replicates
 # check in what proportion of those random phylogeny-based analyses the phylo-corrected model
 # fits the data better than the model without accounting for phylogeny
 
@@ -141,11 +141,11 @@ ef_all_phylo <- ef_all %>%
   slice(1L) %>%
   ungroup() %>%
   mutate(lambda = Phylo.SD /(Species.SD + Phylo.SD))
-108*2*2*6  # 2592 ok
+99*2*2*6  # 2376 ok
 nrow(ef_all_phylo)
 
-nrow(ef_all_phylo[ef_all_phylo$Phylobetter == 'Yes', ]) /nrow(ef_all_phylo)  # 0
-# in none of the 108 replicates the model with phylocorrection fits
+nrow(ef_all_phylo[ef_all_phylo$Phylobetter == 'Yes', ]) /nrow(ef_all_phylo)  # 0.026
+# in 3% of the 100 replicates the model with phylocorrection fits
 # better than the model without accounting for phylogeny
 
 # checking the lambda

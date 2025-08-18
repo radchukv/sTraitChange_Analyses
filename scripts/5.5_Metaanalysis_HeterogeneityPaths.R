@@ -9,6 +9,7 @@ library(patchwork)
 library(tidyverse)
 library(magrittr)
 library(sTraitChange)
+library(ape)
 
 # 0. data read-in  and prepare --------------------------------------------
 ## here read in the files with all thepath coefficeints, also those for indirect and total paths
@@ -71,6 +72,11 @@ Coefs_Aut_sp %<>%
   abs_lat = abs(Latitude)) %>%
   mutate(across(where(is_character), as_factor))
 
+# need a copy with the sp names, to be used to account for phylogeny (apart from that
+# we also account for among-sp variation by including species as random intercept
+# in the model)
+Coefs_Aut_sp$Sp_phylo <- Coefs_Aut_sp$Species
+
 # quick check of how many species have generation time > 2 years
 # for the rebuttal letter
 gen_time_check <- Coefs_Aut_sp %>%
@@ -87,6 +93,53 @@ ggplot(gen_time_check, aes(x = GenLength_y_IUCN.x)) +
     col = 'red', lwd = 2) + theme_bw() +
   xlab("Generation time, years") + theme(axis.title = element_text(size = 20))
 dev.off()
+
+
+# read in the phylo tree
+vert_tree <- read.tree('./data/phylogenies_100/vert1.tre')
+plot(vert_tree)
+is.ultrametric(vert_tree)
+# get the matrix of phylogenetic correlations
+Mat_phylo <- ape::vcv.phylo(vert_tree, corr = TRUE)
+
+
+# check that all species that are on the tree are also in the dataset
+for(i in 1:(nrow(Coefs_Aut_sp))){
+  check <- match(Coefs_Aut_sp$Species[i], vert_tree$tip.label)
+  if (is.na(check)){
+    print(paste(Coefs_Aut_sp$Species[i], 'is not in the phylogeny', sep = ' '))}
+}
+
+# other way around
+for(i in 1:(nrow(Mat_phylo))){
+  check <- match(rownames(Mat_phylo)[i], Coefs_Aut_sp$Species)
+  if (is.na(check)){
+    print(paste(rownames(Mat_phylo)[i], 'is not in the dataset', sep = ' '))}
+}
+
+# chen rossii is not in the dataframe
+vert_tree$tip.label[! vert_tree$tip.label %in% test_df]
+# drop it from the tree
+vert_tree <- drop.tip(vert_tree, 'Chen_rossii')
+
+plot(vert_tree)
+is.ultrametric(vert_tree)
+# get the matrix of phylogenetic correlations
+Mat_phylo <- ape::vcv.phylo(vert_tree, corr = TRUE)
+
+# check again
+for(i in 1:(nrow(Coefs_Aut_sp))){
+  check <- match(Coefs_Aut_sp$Species[i], vert_tree$tip.label)
+  if (is.na(check)){
+    print(paste(Coefs_Aut_sp$Species[i], 'is not in the phylogeny', sep = ' '))}
+}
+
+# other way around
+for(i in 1:(nrow(Mat_phylo))){
+  check <- match(rownames(Mat_phylo)[i], Coefs_Aut_sp$Species)
+  if (is.na(check)){
+    print(paste(rownames(Mat_phylo)[i], 'is not in the dataset', sep = ' '))}
+}
 
 
 # 1.  CZ  --------------------------------------------------------
@@ -126,9 +179,20 @@ CZ_PhenT_scale <- CZ_PhenT_all %>%
          GenLength_y_IUCN.y = scale(GenLength_y_IUCN.y, scale = FALSE),
          Pvalue = scale(Pvalue, scale = FALSE))
 
+
+
+
+# including phylogeny
+tre_sub <- drop.tip(vert_tree, which(!vert_tree$tip.label %in% CZ_PhenT_scale$Species))
+Mat_phen_climtr <- ape::vcv.phylo(tre_sub, corr = TRUE)
+corrplot(Mat_phen_climtr)
+
+# run the model
 mod_CZ_PhenT_all <- rma.mv(Estimate ~ Diet_HCO + Migrat +
                              GenLength_y_IUCN.y + abs_lat + Pvalue,
-                           V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
+                           V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                       ~1|Location, ~1|Sp_phylo),
+                           R = list(Sp_phylo = Mat_phen_climtr),
                            data = CZ_PhenT_scale, method = 'ML')
 mod_CZ_PhenT_all
 anova(mod_CZ_PhenT_all, btt = c(2:7))  ##
@@ -147,7 +211,9 @@ tab_spSpecific_uni(mod_mv = mod_CZ_PhenT_all,
 ## 1. Absolute Latitude
 
 mod_CZ_PhenT_AbsLat <- rma.mv(Estimate ~ abs_lat + Pvalue,
-                     V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
+                     V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                 ~1|Location, ~1|Sp_phylo),
+                     R = list(Sp_phylo = Mat_phen_climtr),
                      data = CZ_PhenT_all, method = 'ML')
 summary(mod_CZ_PhenT_AbsLat) ## marginally signif
 
@@ -167,9 +233,11 @@ plot_CZ_PhenT_AbsLat <- plot_uni_spSpec(data_allEstim = CZ_PhenT_all,
 plot_CZ_PhenT_AbsLat
 ## 2. Generation length
 mod_CZ_PhenT_Gen <- rma.mv(Estimate ~ GenLength_y_IUCN.y + Pvalue,
-                     V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
+                     V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                 ~1|Location,  ~1|Sp_phylo),
+                     R = list(Sp_phylo = Mat_phen_climtr),
                      data = CZ_PhenT_all, method = 'ML')
-summary(mod_CZ_PhenT_Gen) ## marginal
+summary(mod_CZ_PhenT_Gen)
 
 tab_spSpecific_uni(mod_mv = mod_CZ_PhenT_Gen,
                    table_name = './tables/CZ_PhenT_GenTime',
@@ -190,8 +258,16 @@ plot_CZ_PhenT_Gen
 ## 3. Migratory mode
 CZ_PhenT_migr <- CZ_Phen_T %>%
   dplyr::filter(Migrat != 'unknown')
+
+# including phylogeny
+tre_sub_migr <- drop.tip(vert_tree, which(!vert_tree$tip.label %in% CZ_PhenT_migr$Species))
+Mat_phen_climtr_migr <- ape::vcv.phylo(tre_sub_migr, corr = TRUE)
+corrplot(Mat_phen_climtr_migr)
+
 mod_CZ_PhenT_Migr <- rma.mv(Estimate ~ Migrat + Pvalue,
-                     V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
+                     V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                 ~1|Location, ~1|Sp_phylo),
+                     R = list(Sp_phylo = Mat_phen_climtr_migr),
                      data = CZ_PhenT_migr, method = 'ML')
 summary(mod_CZ_PhenT_Migr)  ## nonsignif
 
@@ -204,29 +280,15 @@ tab_spSpecific_uni(mod_mv = mod_CZ_PhenT_Migr,
                    interact_fac = NULL)
 
 
-
-## 4. Thermoreg
-table(CZ_Phen_T$Blood)
-# endotherm ectotherm
-## 86         3
-mod_CZ_PhenT_Therm <- rma.mv(Estimate ~ Blood + Pvalue,
-                      V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
-                      data = CZ_Phen_T, method = 'ML')
-summary(mod_CZ_PhenT_Therm)
-stats::anova(mod_CZ_PhenT_Therm, btt = c(2))
-
-
-tab_spSpecific_uni(mod_mv = mod_CZ_PhenT_Therm,
-                   table_name = './tables/CZ_PhenT_Thermoreg',
-                   explanatory = c('Blood'),
-                   interact_fac = NULL)
-
-
-
-# 5. Diet
+# 4. Diet
 table(CZ_Phen_T$Diet_HCO)
+tre_sub_diet <- drop.tip(vert_tree, which(!vert_tree$tip.label %in% CZ_Phen_T$Species))
+Mat_phen_climtr_d <- ape::vcv.phylo(tre_sub_diet, corr = TRUE)
+corrplot(Mat_phen_climtr_d)
 mod_CZ_PhenT_Diet <- rma.mv(Estimate ~ Diet_HCO + Pvalue,
-                             V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
+                             V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                         ~1|Location, ~1|Sp_phylo),
+                            R = list(Sp_phylo = Mat_phen_climtr_d),
                              data = CZ_Phen_T, method = 'ML')
 summary(mod_CZ_PhenT_Diet)
 stats::anova(mod_CZ_PhenT_Diet, btt = c(2,3))
@@ -310,21 +372,30 @@ ZG_PhenT_scale <- ZG_PhenT_all %>%
          GenLength_y_IUCN.y = scale(GenLength_y_IUCN.y, scale = FALSE),
          Pvalue = scale(Pvalue, scale = FALSE))
 
+# including phylogeny
+tre_sub <- drop.tip(vert_tree, which(!vert_tree$tip.label %in% ZG_PhenT_scale$Species))
+Mat_phen_climtr <- ape::vcv.phylo(tre_sub, corr = TRUE)
+corrplot(Mat_phen_climtr)
+
+
+# here Pvalue is not needed as a covariate
 mod_ZG_PhenT_all <- rma.mv(Estimate ~ Diet_HCO + Migrat +
-                             GenLength_y_IUCN.y + abs_lat + Pvalue,
-                           V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
+                             GenLength_y_IUCN.y + abs_lat,
+                           V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                       ~1|Location, ~1|Sp_phylo),
+                           R = list(Sp_phylo = Mat_phen_climtr),
                            data = ZG_PhenT_scale, method = 'ML',
                            control = list(optimizer = 'uobyqa'))
 mod_ZG_PhenT_all
-anova(mod_ZG_PhenT_all, btt = c(2:7))  ##
-# Test of Moderators (coefficients 2:7):
-#  QM(df = 6) = 9.1764, p-val = 0.1639
+anova(mod_ZG_PhenT_all, btt = c(2:6))  ##
+# Test of Moderators (coefficients 2:6):
+# QM(df = 5) = 9.1296, p-val = 0.1040
 
 
 tab_spSpecific_uni(mod_mv = mod_ZG_PhenT_all,
                    table_name = './tables/ZG_PhenT_allScaled',
                    explanatory = c('Diet_HCO', 'Migrat',
-                                   'GenLength_y_IUCN.y', 'abs_lat', 'Pvalue'),
+                                   'GenLength_y_IUCN.y', 'abs_lat'),
                    interact_fac = NULL)
 
 
@@ -332,7 +403,9 @@ tab_spSpecific_uni(mod_mv = mod_ZG_PhenT_all,
 ## fitting per each single variable
 ## 1.1. Absolute Latitude
 mod_ZG_PhenT_AbsLat <- rma.mv(Estimate ~ abs_lat + Pvalue,
-                              V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
+                              V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                          ~1|Location, ~1|Sp_phylo),
+                              R = list(Sp_phylo = Mat_phen_climtr),
                               data = ZG_PhenT_all, method = 'ML')
 summary(mod_ZG_PhenT_AbsLat) ## non-signif
 
@@ -352,7 +425,9 @@ plot_ZG_PhenT_AbsLat <- plot_uni_spSpec(data_allEstim = ZG_PhenT_all,
 plot_ZG_PhenT_AbsLat
 ## 2. Generation length
 mod_ZG_PhenT_Gen <- rma.mv(Estimate ~ GenLength_y_IUCN.y + Pvalue,
-                           V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
+                           V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                       ~1|Location, ~1|Sp_phylo),
+                           R = list(Sp_phylo = Mat_phen_climtr),
                            data = ZG_PhenT_all, method = 'ML')
 summary(mod_ZG_PhenT_Gen) ## marginal
 
@@ -364,8 +439,16 @@ tab_spSpecific_uni(mod_mv = mod_ZG_PhenT_Gen,
 ## 3. Migratory mode
 ZG_PhenT_migr <- droplevels(ZG_PhenT_all %>%
   dplyr::filter(Migrat != 'unknown'))
+
+# including phylogeny
+tre_sub_migr <- drop.tip(vert_tree, which(!vert_tree$tip.label %in% ZG_PhenT_migr$Species))
+Mat_phen_climtr_migr <- ape::vcv.phylo(tre_sub_migr, corr = TRUE)
+corrplot(Mat_phen_climtr_migr)
+
 mod_ZG_PhenT_Migr <- rma.mv(Estimate ~ Migrat + Pvalue,
-                            V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
+                            V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                        ~1|Location, ~1|Sp_phylo),
+                            R = list(Sp_phylo = Mat_phen_climtr_migr),
                             data = ZG_PhenT_migr, method = 'ML')
 summary(mod_ZG_PhenT_Migr)  ## nonsignif
 
@@ -382,7 +465,9 @@ table(ZG_PhenT_all$Blood) # only 3 ectotherms vs 86 enodtherms... does not make 
 ## 5. Diet
 table(ZG_PhenT_all$Diet_HCO)
 mod_ZG_PhenT_Diet <- rma.mv(Estimate ~ Diet_HCO + Pvalue,
-                            V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
+                            V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                        ~1|Location, ~1|Sp_phylo),
+                            R = list(Sp_phylo = Mat_phen_climtr),
                             data = ZG_PhenT_all, method = 'ML')
 summary(mod_ZG_PhenT_Diet)
 stats::anova(mod_ZG_PhenT_Diet, btt = c(2,3))
@@ -420,15 +505,23 @@ CZG_PhenT_scale <- CZG_PhenT_all %>%
          GenLength_y_IUCN.y = scale(GenLength_y_IUCN.y, scale = FALSE),
          Pvalue = scale(Pvalue, scale = FALSE))
 
+
+# including phylogeny
+tre_sub <- drop.tip(vert_tree, which(!vert_tree$tip.label %in% CZG_PhenT_scale$Species))
+Mat_phen_climtr <- ape::vcv.phylo(tre_sub, corr = TRUE)
+corrplot(Mat_phen_climtr)
+
 mod_CZG_PhenT_all <- rma.mv(Estimate ~ Diet_HCO + Migrat +
                              GenLength_y_IUCN.y + abs_lat + Pvalue,
-                           V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
+                           V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                       ~1|Location, ~1|Sp_phylo),
+                           R = list(Sp_phylo = Mat_phen_climtr),
                            data = CZG_PhenT_scale, method = 'ML',
                            control = list(optimizer = 'uobyqa'))
 mod_CZG_PhenT_all
 anova(mod_CZG_PhenT_all, btt = c(2:7))  ##
 # Test of Moderators (coefficients 2:7):
-# QM(df = 6) = 6.2982, p-val = 0.3906
+# QM(df = 6) = 6.1427, p-val = 0.4074
 
 tab_spSpecific_uni(mod_mv = mod_CZG_PhenT_all,
                    table_name = './tables/CZG_PhenT_allScaled',
@@ -442,7 +535,9 @@ tab_spSpecific_uni(mod_mv = mod_CZG_PhenT_all,
 
 ## 1. Absolute Latitude
 mod_CZG_PhenT_AbsLat <- rma.mv(Estimate ~ abs_lat + Pvalue,
-                        V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
+                        V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                    ~1|Location, ~1|Sp_phylo),
+                        R = list(Sp_phylo = Mat_phen_climtr),
                         data = CZG_PhenT_all, method = 'ML')
 summary(mod_CZG_PhenT_AbsLat)  # non-signif
 
@@ -463,7 +558,9 @@ plot_CZG_PhenT_AbsLat
 
 ## 2. Generation length
 mod_CZG_PhenT_Gen <- rma.mv(Estimate ~ GenLength_y_IUCN.y + Pvalue,
-                     V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
+                     V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                 ~1|Location, ~1|Sp_phylo),
+                     R = list(Sp_phylo = Mat_phen_climtr),
                      data = CZG_PhenT_all, method = 'ML')
 summary(mod_CZG_PhenT_Gen)
 
@@ -475,8 +572,15 @@ tab_spSpecific_uni(mod_mv = mod_CZG_PhenT_Gen,
 ## 3. Migratory mode
 CZG_PhenT_migr <- CZG_PhenT_all %>%
   dplyr::filter(Migrat != 'unknown')
+# including phylogeny
+tre_sub_migr <- drop.tip(vert_tree, which(!vert_tree$tip.label %in% CZG_PhenT_migr$Species))
+Mat_phen_climtr_migr <- ape::vcv.phylo(tre_sub_migr, corr = TRUE)
+corrplot(Mat_phen_climtr_migr)
+
 mod_CZG_PhenT_Migr <- rma.mv(Estimate ~ Migrat + Pvalue,
-                      V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
+                      V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                  ~1|Location, ~1|Sp_phylo),
+                      R = list(Sp_phylo = Mat_phen_climtr_migr),
                       data = CZG_PhenT_migr, method = 'ML')
 summary(mod_CZG_PhenT_Migr)
 
@@ -492,9 +596,11 @@ table(CZG_PhenT_migr$Blood)  ## only 2 ectotherms, is not very meaningful
 ## 5. Diet
 table(CZG_PhenT_all$Diet_HCO)
 mod_CZG_PhenT_Diet <- rma.mv(Estimate ~ Diet_HCO + Pvalue,
-                            V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
+                            V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                        ~1|Location, ~1|Sp_phylo),
+                            R = list(Sp_phylo = Mat_phen_climtr),
                             data = CZG_PhenT_all, method = 'ML')
-summary(mod_CZG_PhenT_Diet)  ## p-val = 0.2683
+summary(mod_CZG_PhenT_Diet)  ## p-val = 0.2679
 stats::anova(mod_CZG_PhenT_Diet, btt = c(2,3))
 ## non-signif
 
@@ -529,9 +635,17 @@ CG_PhenT_scale <- CG_PhenT_all %>%
          GenLength_y_IUCN.y = scale(GenLength_y_IUCN.y, scale = FALSE),
          Pvalue = scale(Pvalue, scale = FALSE))
 
+# including phylogeny
+tre_sub <- drop.tip(vert_tree, which(!vert_tree$tip.label %in% CG_PhenT_scale$Species))
+Mat_phen_climtr <- ape::vcv.phylo(tre_sub, corr = TRUE)
+corrplot(Mat_phen_climtr)
+
+# run the model
 mod_CG_PhenT_all <- rma.mv(Estimate ~ Diet_HCO + Migrat +
                               GenLength_y_IUCN.y + abs_lat + Pvalue,
-                            V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
+                            V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                        ~1|Location, ~1|Sp_phylo),
+                           R = list(Sp_phylo = Mat_phen_climtr),
                             data = CG_PhenT_scale, method = 'ML',
                             control = list(optimizer = 'uobyqa'))
 mod_CG_PhenT_all
@@ -552,7 +666,9 @@ tab_spSpecific_uni(mod_mv = mod_CG_PhenT_all,
 
 ## 1.1. Absolute Latitude
 mod_CG_PhenT_AbsLat <- rma.mv(Estimate ~ abs_lat + Pvalue,
-                         V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
+                         V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                     ~1|Location, ~1|Sp_phylo),
+                         R = list(Sp_phylo = Mat_phen_climtr),
                          data = CG_PhenT_all, method = 'ML',
                          control = list(optimizer = 'uobyqa'))
 summary(mod_CG_PhenT_AbsLat)
@@ -577,7 +693,9 @@ plot_CG_PhenT_AbsLat <- plot_uni_spSpec(data_allEstim = CG_PhenT_all,
 plot_CG_PhenT_AbsLat
 ## 2. Generation time
 mod_CG_PhenT_Gen <- rma.mv(Estimate ~ GenLength_y_IUCN.y + Pvalue,
-                      V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
+                      V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                  ~1|Location, ~1|Sp_phylo),
+                      R = list(Sp_phylo = Mat_phen_climtr),
                       data = CG_PhenT_all, method = 'ML',
                       control = list(optimizer = 'BFGS'))
 summary(mod_CG_PhenT_Gen)
@@ -593,9 +711,18 @@ tab_spSpecific_uni(mod_mv = mod_CG_PhenT_Gen,
 CG_PhenT_migr <- droplevels(CG_PhenT_all %>%
   dplyr::filter(Migrat != 'unknown'))
 table(CG_PhenT_migr$Migrat)
+
+# including phylogeny
+tre_sub_migr <- drop.tip(vert_tree, which(!vert_tree$tip.label %in% CG_PhenT_migr$Species))
+Mat_phen_climtr_migr <- ape::vcv.phylo(tre_sub_migr, corr = TRUE)
+corrplot(Mat_phen_climtr_migr)
+
 mod_CG_PhenT_Migr <- rma.mv(Estimate ~ Migrat + Pvalue,
-                       V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
-                       data = CG_PhenT_migr, method = 'ML', control = list(optimizer = 'BFGS'))
+                       V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                   ~1|Location, ~1|Sp_phylo),
+                       R = list(Sp_phylo = Mat_phen_climtr_migr),
+                       data = CG_PhenT_migr, method = 'ML',
+                       control = list(optimizer = 'BFGS'))
 summary(mod_CG_PhenT_Migr)
 
 tab_spSpecific_uni(mod_mv = mod_CG_PhenT_Migr,
@@ -610,7 +737,9 @@ table(CG_PhenT_all$Blood) # only 3 ectothemrs, won't work
 ## 5. Diet
 table(CG_PhenT_all$Diet_HCO)
 mod_CG_PhenT_Diet <- rma.mv(Estimate ~ Diet_HCO + Pvalue,
-                             V = SError^2, random = list(~ 1|Species, ~1|ID, ~1|Location),
+                             V = SError^2, random = list(~ 1|Species, ~1|ID,
+                                                         ~1|Location, ~1|Sp_phylo),
+                            R = list(Sp_phylo = Mat_phen_climtr),
                              data = CG_PhenT_all, method = 'ML')
 summary(mod_CG_PhenT_Diet)  # non-signif
 stats::anova(mod_CG_PhenT_Diet, btt = c(2,3))

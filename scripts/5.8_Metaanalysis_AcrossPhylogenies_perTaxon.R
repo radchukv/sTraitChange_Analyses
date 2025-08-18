@@ -155,8 +155,8 @@ ef_all_phylo <- ef_all %>%
 100*2*2*6  # 2400 ok
 nrow(ef_all_phylo)
 
-nrow(ef_all_phylo[ef_all_phylo$Phylobetter == 'Yes', ]) /nrow(ef_all_phylo)  # 0
-# in none of the 108 replicates the model with phylocorrection fits
+nrow(ef_all_phylo[ef_all_phylo$Phylobetter == 'Yes', ]) /nrow(ef_all_phylo)  # 0.04208754
+# in n0.04208754  of the 100 replicates the model with phylocorrection fits
 # better than the model without accounting for phylogeny
 
 # checking the lambda
@@ -267,18 +267,14 @@ length(unique(ef_all_m$phylo)) # 100 replicates
 
 # 5. Plots across all phylo analyses ------------------------------------------
 # read the dtaa on all vertebrates
-ef_1 <- readRDS("./output_all/ef_all_difPhylo.rds")
-ef_2 <- readRDS("./output_all/ef_all_difPhylo1.rds")
-ef_2 %<>%
-  filter(phylo != 2)
+ef_all <- readRDS("./output_all/ef_all_difPhylo1.rds")
 
-ef_all <- rbind(ef_1, ef_2)
-length(unique(ef_all$phylo))
+
 
 # keep 100 replicates only
 ef_all_phylo <- ef_all %>%
   mutate(Phylobetter = ifelse(AIC_phylo < AIC_nophyl, "Yes", "No")) %>%
-  filter(Variable == 'intrcpt' & phylo %in% c(1:102)) %>%
+  filter(Variable == 'intrcpt') %>%
   group_by(Trait_Categ, Clim, Relation, phylo) %>%
   slice(1L) %>%
   ungroup() %>%
@@ -293,7 +289,7 @@ ef_all_phylo <- ef_all %>%
 ef_all_phylo$REL <- factor(ef_all_phylo$REL, levels = c('CZ', 'ZG','CG', 'PG', 'CZG', 'TotalCG'))
 100*2*2*6  # 2400 ok
 nrow(ef_all_phylo)
-nrow(ef_all_phylo[ef_all_phylo$Phylobetter == 'Yes', ]) /nrow(ef_all_phylo)  # 0
+nrow(ef_all_phylo[ef_all_phylo$Phylobetter == 'Yes', ]) /nrow(ef_all_phylo)  # 0.02609428
 
 
 # read the file on birds
@@ -321,7 +317,7 @@ ef_all_phylo_b <- ef_all_b %>%
 100*2*2*6  # 2400 ok
 nrow(ef_all_phylo_b)
 
-nrow(ef_all_phylo_b[ef_all_phylo_b$Phylobetter == 'Yes', ]) /nrow(ef_all_phylo_b)
+nrow(ef_all_phylo_b[ef_all_phylo_b$Phylobetter == 'Yes', ]) /nrow(ef_all_phylo_b)  # 0.04208754
 ef_all_phylo_b$REL <- factor(ef_all_phylo_b$REL, levels = c('CZ', 'ZG','CG', 'PG', 'CZG', 'TotalCG'))
 
 # read the data for mammals
@@ -346,7 +342,7 @@ ef_all_phylo_m <- ef_all_m %>%
 100*2*2*6  # 2400 ok
 nrow(ef_all_phylo_m)
 
-nrow(ef_all_phylo_m[ef_all_phylo_m$Phylobetter == 'Yes', ]) /nrow(ef_all_phylo_m)
+nrow(ef_all_phylo_m[ef_all_phylo_m$Phylobetter == 'Yes', ]) /nrow(ef_all_phylo_m)  #0.0008417508
 ef_all_phylo_m$REL <- factor(ef_all_phylo_m$REL, levels = c('CZ', 'ZG','CG', 'PG', 'CZG', 'TotalCG'))
 
 

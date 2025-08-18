@@ -368,7 +368,7 @@ ord <- order(ef_all$Trait_Categ, ef_all$REL)
 ef_all <- ef_all[ord, ]
 
 ## save ef_all
-saveRDS(object = ef_all, file = './output_all/all_efSizes_temperature_cor.RDS')
+saveRDS(object = ef_all, file = './output_all/all_efSizes_temperature.RDS')
 # ef_all <- readRDS(file = './output_all/all_efSizes_temperature.RDS')
 
 # IV. Extract heterogeneity metrics -------------------------------------------

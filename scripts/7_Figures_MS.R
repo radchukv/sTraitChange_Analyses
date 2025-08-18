@@ -13,7 +13,7 @@ library(grafify) # for colour-blind -friendly colour scheme
 # 1. Figure for SEMs, with temp and precip  --------
 
 ## read in the effect sizes on temperature
-ef_T <- readRDS(file = './output_all/all_efSizes_temperature_cor.RDS')
+ef_T <- readRDS(file = './output_all/all_efSizes_temperature.RDS')
 ef_T$Climatic_var <- 'Temperature'
 
 ## effect sizes precipitation
