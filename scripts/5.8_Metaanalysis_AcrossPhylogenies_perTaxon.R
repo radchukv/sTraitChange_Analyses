@@ -401,7 +401,7 @@ plot_CZ_AllTraitClim_analyses <- ef %>%
   scale_colour_grafify(palette = 'muted') +
   scale_fill_grafify(palette = 'muted')
 
-pdf('./plots_ms/FigS22_Lambda_CZ_acrossAllsets.pdf')
+pdf('./plots_ms/FigS23_Lambda_CZ_acrossAllsets.pdf')
 print(plot_CZ_AllTraitClim_analyses)
 dev.off()
 
@@ -433,7 +433,7 @@ plot_ZG_AllTraitClim_analyses <- ef %>%
   scale_fill_grafify(palette = 'muted')
 
 
-pdf('./plots_ms/FigS23_Lambda_ZG_acrossAllsets.pdf')
+pdf('./plots_ms/FigS24_Lambda_ZG_acrossAllsets.pdf')
 print(plot_ZG_AllTraitClim_analyses)
 dev.off()
 
@@ -466,7 +466,7 @@ plot_CZG_AllTraitClim_analyses <- ef %>%
   scale_fill_grafify(palette = 'muted')
 
 
-pdf('./plots_ms/FigS24_Lambda_CZG_acrossAllsets.pdf')
+pdf('./plots_ms/FigS25_Lambda_CZG_acrossAllsets.pdf')
 print(plot_CZG_AllTraitClim_analyses)
 dev.off()
 
@@ -498,7 +498,7 @@ plot_CG_AllTraitClim_analyses <- ef %>%
   scale_fill_grafify(palette = 'muted')
 
 
-pdf('./plots_ms/FigS25_Lambda_CG_acrossAllsets.pdf')
+pdf('./plots_ms/FigS26_Lambda_CG_acrossAllsets.pdf')
 print(plot_CG_AllTraitClim_analyses)
 dev.off()
 

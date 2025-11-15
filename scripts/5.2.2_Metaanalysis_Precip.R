@@ -438,6 +438,10 @@ heter_data_precip <- heter_data_precip[order(heter_data_precip$Trait_Category,
 
 heter_data_precip$Q <- format(round(heter_data_precip$Q, 1), scientific = FALSE)
 heter_data_precip$I2 <- format(round(heter_data_precip$I2, 3),  scientific = FALSE)
+# output the exact p values according with NatComms requirements
+save_xlsx(table = heter_data_precip, table_name = './tables/Heterogen_MetaAnalyses_Precipitation_exactP')
+
+
 heter_data_precip$pval <- numeric(length = nrow(heter_data_precip))
 for(i in 1:nrow(heter_data_precip)){
   if(heter_data_precip$Qp[i] < 0.001){

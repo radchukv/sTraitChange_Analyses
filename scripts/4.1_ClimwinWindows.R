@@ -169,7 +169,7 @@ plot_winDur <- ggplot(bothCl, aes(x = WinDur)) + geom_histogram(binwidth = 1) +
             aes(x = x, y = y, label = lab_txt),
             fontface = 'bold', size = 5)
 
-pdf('./plots_ms/FigS9_Histogram_WinDur_Full&Reduced.pdf')
+pdf('./plots_ms/FigS17_Histogram_WinDur_Full&Reduced.pdf')
 print(plot_winDur)
 dev.off()
 
@@ -204,7 +204,7 @@ pl_Cstat_pVal <- ggplot(bothClim, aes(x = P.Value)) +
             fontface = 'bold', size = 6)
 
 
-pdf('./plots_ms/FigS11_Cstat_Pval_Clim&TraitCateg.pdf',
+pdf('./plots_ms/FigS19_Cstat_Pval_Clim&TraitCateg.pdf',
     height = 10, width = 10)
 print(pl_Cstat_pVal)
 dev.off()

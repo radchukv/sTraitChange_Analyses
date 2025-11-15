@@ -409,6 +409,9 @@ heter_data_temp <- heter_data_temp[order(heter_data_temp$Trait_Category,
 
 heter_data_temp$Q <- format(round(heter_data_temp$Q, 1), scientific = FALSE)
 heter_data_temp$I2 <- format(round(heter_data_temp$I2, 3),  scientific = FALSE)
+# output the exact p values according with NatComms requirements
+save_xlsx(table = heter_data_temp, table_name = './tables/Heterogen_MetaAnalyses_Temperature_exactP')
+
 heter_data_temp$pval <- numeric(length = nrow(heter_data_temp))
 for(i in 1:nrow(heter_data_temp)){
   if(heter_data_temp$Qp[i] < 0.001){

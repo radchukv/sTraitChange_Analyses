@@ -51,6 +51,9 @@ ef_all_perParstats <- ef_all %>%
                 Chi2 = format(round(Chi2, 2), nsmall = 2, scientific = FALSE))
 
 ef_all_perParstats$`p value` <- numeric(length = nrow(ef_all_perParstats))
+
+# outputting the file with the exact p values
+save_xlsx(table = ef_all_perParstats, table_name = './tables/StatsPerParam_AllGroups_exactP')
 for(i in 1:nrow(ef_all_perParstats)){
   if (ef_all_perParstats$pval[i] < 0.0001){
     ef_all_perParstats$`p value`[i] <- '<0.0001'
@@ -205,7 +208,7 @@ p_Morph <- plot_hist_points(data_allEstim = all_Es,
 
 
 
-pdf('./plots_ms/FigS14_HistEffectSizes_PerTrait&Climate.pdf', width = 9, height = 7)
+pdf('./plots_ms/FigS7_HistEffectSizes_PerTrait&Climate.pdf', width = 9, height = 7)
 p_Morph + p_Phen +
   plot_layout(guides = 'collect') +
   plot_annotation(tag_levels = "a") &
@@ -328,7 +331,7 @@ Fig_DD <- ggplot(ef_all_DD, aes(x = Estimate, y = yAx)) +
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank(),
         strip.text = element_text(size = 12),
-        plot.margin = margin(0.2, 0.2, 1.5, 4.5, unit = 'line'),
+        plot.margin = margin(t = 0.2, r = 0.2, b = 1.5, 4.5, unit = 'line'),
         legend.position = 'bottom',
         strip.background = element_blank(),
         legend.box="vertical", legend.margin=margin(),
@@ -340,20 +343,20 @@ Fig_DD <- ggplot(ef_all_DD, aes(x = Estimate, y = yAx)) +
   geom_text(data = labs_df, aes(x = x, y =y, label = label), hjust=1) +
   coord_cartesian(clip = 'off', xlim = c(-2, 1.5)) +
   scale_colour_manual(values = c("Signif, temperature" = "brown4",
-                                 "Non-signif, temperature" = "darkorange2",
-                                 "Signif, precipitation" = "darkgreen",
-                                 "Non-signif, precipitation" = "springgreen3"),
+                                 "Non-signif, temperature" = "orangered2",
+                                 "Signif, precipitation" = "navyblue",
+                                 "Non-signif, precipitation" = "cornflowerblue"),
                       name = 'Significance') +
-  scale_shape_manual(values = c(21, 4), name = 'DD') +
-  scale_linetype_manual(values = c('dotted', 'solid'), name = 'DD') +
+  scale_shape_manual(values = c(21, 4), name = 'Population size') +
+  scale_linetype_manual(values = c('dotted', 'solid'), name = 'Population size') +
   guides(color=guide_legend(nrow=2, byrow = TRUE)) +
   geom_text(data = tab_T, aes(x = x, y= y, label = Count), col = "brown4") +
-  geom_text(data = tab_P, aes(x = x, y= y, label = Count), col = "darkgreen") +
+  geom_text(data = tab_P, aes(x = x, y= y, label = Count), col = "navyblue") +
   geom_text(data = label_facet, aes(x = x, y = y, label = lab), fontface = 'bold') +
   geom_text(data = axisLab, aes(x = x, y = y, label= label), angle = 90)
 
 ## output the figure
-pdf('plots_ms/FigS18_SensitivityDD.pdf', width = 8, height = 6)
+pdf('plots_ms/FigS11_SensitivityDD.pdf', width = 8, height = 6)
 print(Fig_DD)
 dev.off()
 
@@ -440,7 +443,7 @@ Fig_Pval <- ggplot(ef_all_P, aes(x = Estimate, y = yAx)) +
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank(),
         strip.text = element_text(size = 12),
-        plot.margin = margin(0.2, 0.2, 1.5, 4.5, unit = 'line'),
+        plot.margin = margin(t = 0.2, r = 0.2, b = 1.5, l= 4.5, unit = 'line'),
         legend.position = 'bottom',
         strip.background = element_blank(),
         legend.box="vertical", legend.margin=margin(),
@@ -452,21 +455,21 @@ Fig_Pval <- ggplot(ef_all_P, aes(x = Estimate, y = yAx)) +
   geom_text(data = labs_df, aes(x = x, y =y, label = label), hjust=1) +
   coord_cartesian(clip = 'off', xlim = c(-2, 1.5)) +
   scale_colour_manual(values = c("Signif, temperature" = "brown4",
-                                 "Non-signif, temperature" = "darkorange2",
-                                 "Signif, precipitation" = "darkgreen",
-                                 "Non-signif, precipitation" = "springgreen3"),
+                                 "Non-signif, temperature" = "orangered2",
+                                 "Signif, precipitation" = "navyblue",
+                                 "Non-signif, precipitation" = "cornflowerblue"),
                       name = 'Significance') +
   scale_shape_manual(values = c(21, 4), name = 'PdeltaAICc') +
   scale_linetype_manual(values = c('dotted', 'solid'), name = 'PdeltaAICc') +
   guides(color=guide_legend(nrow=2, byrow = TRUE)) +
   geom_text(data = tab_T, aes(x = x, y= y, label = Count), col = "brown4") +
-  geom_text(data = tab_P, aes(x = x, y= y, label = Count), col = "darkgreen") +
+  geom_text(data = tab_P, aes(x = x, y= y, label = Count), col = "navyblue") +
   geom_text(data = label_facet, aes(x = x, y = y, label = lab), fontface = 'bold') +
   geom_text(data = axisLab, aes(x = x, y = y, label= label), angle = 90)
 
 
 
-pdf('./plots_ms/FigS17_Sensitivity_PdeltaAICc.pdf', width = 8, height = 5)
+pdf('./plots_ms/FigS10_Sensitivity_PdeltaAICc_t.pdf', width = 8, height = 5)
 print(Fig_Pval)
 dev.off()
 
@@ -823,30 +826,6 @@ CZG_dens + CG_dens +
   plot_layout(nrow = 2)
 dev.off()
 #
-#
-# layout_man <- "
-# AB
-# #D
-# CD
-# E#
-# "
-#
-# # this part of the script will have to be deleted if this is not
-# the format of the figure that is included in the MS
-# pdf('./output_all/Fig_4panels_Concept_PhenT_ColouredByCZGSign.pdf',
-#     height = 13, width = 13)
-# PhenT_CZ +
-#   PhenT_ZG +
-#   PhenT_CZvsZG_CZGNonneg +
-#   PhenT_CZGvsCG+
-#   guide_area() +
-#   plot_annotation(tag_levels = 'a') +
-#   plot_layout(design = layout_man,
-#               widths = c(4,4), heights = c(4, 0.1, 4, 0.2),
-#               guides = 'collect'
-#               ) &
-#   theme(plot.tag = element_text(face = 'bold', size = 20))
-# dev.off()
 
 
 # binomial test to assess whehter the proportion of non-negative is
@@ -960,7 +939,7 @@ CD
 E#
 "
 
-pdf('./plots_ms/FigS26_MorphT_CZvsZG_ColouredByCZGSign.pdf',
+pdf('./plots_ms/FigS27_MorphT_CZvsZG_ColouredByCZGSign.pdf',
     height = 13, width = 13)
 MorphT_CZ +
   MorphT_ZG +
@@ -1089,7 +1068,7 @@ CD
 E#
 "
 
-pdf('./plots_ms/FigS27_PhenP_CZvsZG_ColouredByCZGSign.pdf',
+pdf('./plots_ms/FigS28_PhenP_CZvsZG_ColouredByCZGSign.pdf',
     height = 13, width = 13)
 PhenP_CZ +
   PhenP_ZG +
@@ -1219,7 +1198,7 @@ CD
 E#
 "
 
-pdf('./plots_ms/FigS28_MorphP_CZvsZG_ColouredByCZGSign.pdf',
+pdf('./plots_ms/FigS29_MorphP_CZvsZG_ColouredByCZGSign.pdf',
     height = 13, width = 13)
 MorphP_CZ +
   MorphP_ZG +
@@ -1261,7 +1240,7 @@ tab_T$y <- rep(14, 2)
 tab_T <- tab_T[order(tab_T$Trait_Categ), ]
 tab_T$Lab <- letters[1:2]
 
-pdf('./plots_ms/FigS15_EfSizes_Covariates_perTraitCateg_Temperature.pdf', width = 9)
+pdf('./plots_ms/FigS8_EfSizes_Covariates_perTraitCateg_Temperature.pdf', width = 9)
 ggplot(ef_T, aes(x = Estimate, y = yAx)) +
   geom_vline(xintercept = 0, linetype = 'dashed', color = 'lightgrey', lwd = 1.1) +
   geom_errorbar(width=.1,
@@ -1311,7 +1290,7 @@ tab_P$Trait_Categ <- as.factor(tab_P$Trait_Categ)
 tab_P <- tab_P[order(tab_P$Trait_Categ), ]
 tab_P$Lab <- letters[1:2]
 
-pdf('./plots_ms/FigS16_EfSizes_Covariates_perTraitCateg_Precip.pdf', width = 9)
+pdf('./plots_ms/FigS9_EfSizes_Covariates_perTraitCateg_Precip.pdf', width = 9)
 ggplot(ef_P, aes(x = Estimate, y = yAx)) +
   geom_vline(xintercept = 0, linetype = 'dashed', color = 'lightgrey', lwd = 1.1) +
   geom_errorbar(width=.1,

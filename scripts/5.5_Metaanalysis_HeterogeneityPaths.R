@@ -5,11 +5,12 @@
 # according to the hypotheses outlined in the manuscript
 
 library(metafor)
-library(patchwork)
 library(tidyverse)
 library(magrittr)
 library(sTraitChange)
+library(corrplot)
 library(ape)
+library(patchwork)
 
 # 0. data read-in  and prepare --------------------------------------------
 ## here read in the files with all thepath coefficeints, also those for indirect and total paths
@@ -118,7 +119,7 @@ for(i in 1:(nrow(Mat_phylo))){
 }
 
 # chen rossii is not in the dataframe
-vert_tree$tip.label[! vert_tree$tip.label %in% test_df]
+vert_tree$tip.label[! vert_tree$tip.label %in% Coefs_Aut_sp$Species]
 # drop it from the tree
 vert_tree <- drop.tip(vert_tree, 'Chen_rossii')
 
@@ -768,10 +769,10 @@ dev.off()
 # plot of the associations between abs_latitude and each of the path coefficients in the SEM
 pdf('./plots_ms/Fig4_Latitude_explains_CZ_CZG_CG_based_SD.pdf',
     width = 8, height = 8)
-plot_CZ_PhenT_AbsLat[[2]] +
-  plot_ZG_PhenT_AbsLat[[2]] +
-  plot_CZG_PhenT_AbsLat[[2]] +
-  plot_CG_PhenT_AbsLat[[2]] +
+plot_CZ_PhenT_AbsLat +
+  plot_ZG_PhenT_AbsLat +
+  plot_CZG_PhenT_AbsLat +
+  plot_CG_PhenT_AbsLat +
   plot_layout(guides = 'collect', axis_titles = "collect", ncol = 2, nrow = 2) +
   plot_annotation(tag_levels = "a") &
   theme(plot.margin = unit(c(0.3, 0.3, 0, 0), 'line'),

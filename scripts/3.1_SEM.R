@@ -158,7 +158,7 @@ plot_R2_Tr <- ggplot(R2_Aut_proc, aes(x = R.squared)) +
             fontface = 'bold', size = 5) + xlab(expression('R'^2)) +
   ylab('Frequency')
 
-pdf('./plots_ms/FigS12_R2_allMods_Temp_Weights_DD_Autocor_DiffTraitCateg.pdf',
+pdf('./plots_ms/FigS20_R2_allMods_Temp_Weights_DD_Autocor_DiffTraitCateg.pdf',
     width = 10, height = 10)
 print(plot_R2_Tr)
 dev.off()
@@ -226,7 +226,7 @@ G_varpart_temp_long <-
 G_varpart_temp_long$NamePart <- as.factor(G_varpart_temp_long$NamePart)
 levels(G_varpart_temp_long$NamePart) <- c('Climate', 'PopSize', 'Trait')
 
-pdf('./plots_ms/FigS21_additional_VarPart_InG.pdf', height = 6, width = 10)
+pdf('./plots_ms/FigS22_additional_VarPart_InG.pdf', height = 6, width = 10)
 ggplot(G_varpart_temp_long, aes(x = R2)) +
   geom_histogram(fill = 'grey', color = 'grey') +
   geom_vline(
@@ -466,7 +466,7 @@ plot_R2_Tr_precip <- ggplot(R2_Aut_precip, aes(x = R.squared)) +
             fontface = 'bold', size = 5) + xlab(expression('R'^2)) +
   ylab('Frequency')
 
-pdf('./plots_ms/FigS13_R2_allMods_Precip_Weights_DD_Autocor_DiffTraitCateg.pdf',
+pdf('./plots_ms/FigS21_R2_allMods_Precip_Weights_DD_Autocor_DiffTraitCateg.pdf',
     width = 10, height = 10)
 print(plot_R2_Tr_precip)
 dev.off()
