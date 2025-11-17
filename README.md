@@ -4,13 +4,14 @@
 # sTraitChange_Analyses
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 The goal of sTraitChange_Analyses project is to provide the full
 workflow as well as the data needed to reproduce the analyses for the
 manuscript ‘Changes in phenology mediate vertebrate population responses
-to temperature globally’ by Radchuk et al. (submitted). The analyses in
-this repository rely heavily on the functions available from
+to temperature globally’ by Radchuk et al. *Nature Communications*. The
+analyses in this repository rely heavily on the functions available from
 [sTraitChange](https://github.com/radchukv/sTraitChange) package.
 
 ## System requirements
